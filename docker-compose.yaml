@@ -23,9 +23,9 @@ services:
     volumes:
       - ./:/app
     ports:
-      - "3333:3333"
+      - "3333:5173"
     environment:
-      - VITE_BASE_URL=http://172.24.0.2:3333
+      - VITE_BASE_URL=http://172.24.0.2:5173
 
     
 
