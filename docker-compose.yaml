@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  dev:
+    container_name: tbet-dev
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/app
+    ports:
+      - "3001:3000"
+    environment:
+      - VITE_BASE_URL=http://localhost:8080
+      - REACT_APP_STAGE=development
+      - MODE=development
+
+  prod:
+    container_name: tbet-prod-dashboard
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/app
+    ports:
+      - "3333:3333"
+    environment:
+      - VITE_BASE_URL=http://172.24.0.2:3333
+
+    
+
