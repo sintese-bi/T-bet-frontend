@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.grad {
+  background-image: linear-gradient(to right, #ffbf69, #99733f);
+}
+
+#root {
+  background-color: #333;
+  height: 100vh;
+}
