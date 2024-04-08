@@ -96,7 +96,8 @@ const HomePage: React.FC = () => {
               <Select
                 {...field}
                 placeholder="Selecionar liga"
-                data={Object.values(LEAGUE).map((league) => league)}
+                // data={Object.values(LEAGUE).map((league) => league)}
+                data={[LEAGUE.EURO]}
                 onChange={(value) => field.onChange(value)}
               />
             )}
@@ -115,6 +116,8 @@ const HomePage: React.FC = () => {
                 placeholder="Selecionar jogo"
                 data={games.map((game) => game)}
                 onChange={(value) => field.onChange(value)}
+                nothingFoundMessage="O nome dos times deve ser igual a como aparece na bet."
+                searchable
               />
             )}
           />
@@ -143,7 +146,7 @@ const HomePage: React.FC = () => {
                   highestStatKey === key ? (
                     <div key={key} className={``}>
                       <Text>
-                        Modalidade: <b>{formatGameStatsLabel(key)}</b>
+                        Mercado: <b>{formatGameStatsLabel(key)}</b>
                       </Text>
 
                       <Text>
