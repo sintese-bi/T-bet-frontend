@@ -73,7 +73,7 @@ const HomePage: React.FC = () => {
   return (
     <form className="max-w-7xl w-full m-auto mt-5 flex flex-col gap-10">
       {/* CREDIT */}
-      <section className="bg-[#9EB68D] text-black rounded-lg flex flex-wrap justify-center items-center p-4 gap-5 lg:gap-0 lg:justify-between ">
+      <section className="bg-[#232323] text-green-400 rounded-lg flex flex-wrap justify-center items-center p-4 gap-5 lg:gap-0 lg:justify-between ">
         <div className="flex gap-4">
           <p>QUANTIDADE DE PESQUISAS GRATUITAS</p>
           <p>0/3</p>
@@ -122,71 +122,43 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* GAME INFO */}
-      <section
-        className={`max-w-lg w-full m-auto flex flex-col bg-[#232323] p-8 rounded-2xl gap-14 ${!selectedGame && "border-2 border-[#FFBF69]"}`}
-      >
-        {isLoadingGames ? (
+      {isLoadingGames ? (
+        <section
+          className={`max-w-lg w-full m-auto bg-[#232323] p-8 rounded-2xl gap-14 `}
+        >
           <div className="self-center flex flex-col items-center">
             <RingLoader color="#ffbf69" />
             <Text size="lg" style={{ marginTop: 10 }}>
               Analisando dados do jogo... {loadingProgress}%
             </Text>
           </div>
-        ) : (
-          <>
-            {selectedGame ? (
-              <div className="flex flex-col gap-5">
-                {/* GAME */}
-                <div className="flex justify-between items-center">
-                  {/* TEAM 1 */}
-                  <div className="flex flex-col items-center justify-center">
-                    <p className="text-[#FFBF69] text-xl">
-                      {selectedGame?.split("-")[0] || "TIME 1"}
-                    </p>
-                  </div>
+        </section>
+      ) : (
+        <>
+          {selectedGame && (
+            <section className={`max-w-lg w-full grad p-8 rounded-2xl`}>
+              {/* GAME STATS */}
+              <div className="flex flex-wrap gap-2 justify-center ">
+                {orderedStatsKeys.map((key: HighestStatKey) =>
+                  highestStatKey === key ? (
+                    <div key={key} className={``}>
+                      <Text>
+                        Modalidade: <b>{formatGameStatsLabel(key)}</b>
+                      </Text>
 
-                  {/* DATE */}
-                  <div className="flex flex-col items-center justify-center flex-1"></div>
-
-                  {/* TEAM 2 */}
-                  <div className="flex flex-col items-center justify-center">
-                    <p className="text-[#FFBF69] text-xl">
-                      {selectedGame?.split("-")[1] || "TIME 2"}
-                    </p>
-                  </div>
-                </div>
-
-                {/* GAME STATS */}
-                <div className="flex flex-wrap gap-2 justify-center">
-                  {orderedStatsKeys.map((key: HighestStatKey) =>
-                    highestStatKey === key ? (
-                      <div
-                        key={key}
-                        className={`border-2 border-[#FFBF69] p-3 rounded-lg grad`}
-                      >
-                        <Text>
-                          Modalidade: <b>{formatGameStatsLabel(key)}</b>
-                        </Text>
-
-                        <Text>
-                          Porcentagem:{" "}
-                          <b>{formatGameStatsPorcentage(game[key])}</b>
-                        </Text>
-                      </div>
-                    ) : (
-                      <></>
-                    )
-                  )}
-                </div>
+                      <Text>
+                        Acurácia: <b>{formatGameStatsPorcentage(game[key])}</b>
+                      </Text>
+                    </div>
+                  ) : (
+                    <></>
+                  )
+                )}
               </div>
-            ) : (
-              <div className="text-center text-lg text-[#FFBF69]">
-                Selecione um jogo para ver a analise completa.
-              </div>
-            )}
-          </>
-        )}
-      </section>
+            </section>
+          )}
+        </>
+      )}
     </form>
   );
 };
