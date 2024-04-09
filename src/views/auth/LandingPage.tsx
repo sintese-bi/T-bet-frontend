@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { Button } from "../../components";
 import { BROWSER_ROUTE } from "../../constants";
 import { Swiper, SwiperSlide } from "swiper/react";
 
@@ -15,7 +14,7 @@ const LandingPage = () => {
 
   return (
     <main className="flex flex-col h-screen">
-      <section className="flex flex-col items-center pt-2 gap-4">
+      <section className="flex flex-col items-center pt-3 gap-4">
         <img src={"/logo.png"} alt="Tbet logo" />
 
         <p className="text-green-400 font-bold text-center">
@@ -23,12 +22,12 @@ const LandingPage = () => {
           MERCADO.
         </p>
       </section>
-      <section className="bg-[url('/banner.png')] flex-1 bg-cover bg-no-repeat bg-center flex justify-center items-center">
-        <button className="grad p-3" onClick={goToHome}>
+      <section className="bg-[url('/banner.png')] flex-1 bg-cover bg-no-repeat bg-center lg:bg-cover lg:bg-no-repeat lg:bg-center flex justify-center items-center">
+        <button className="grad p-2" onClick={goToHome}>
           Accessar plataforma
         </button>
       </section>
-      <section className="max-w-2xl w-full mx-auto py-4 px-3">
+      <section className="max-w-2xl w-full mx-auto py-5 px-3 my-5">
         <Swiper
           modules={[Pagination]}
           pagination={{
