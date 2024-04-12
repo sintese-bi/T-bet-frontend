@@ -6,11 +6,19 @@ import { Pagination } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/pagination";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { getIpAddress } from "../../redux/actions";
 
 const LandingPage = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const goToHome = () => navigate(BROWSER_ROUTE.HOME);
+
+  useEffect(() => {
+    dispatch(getIpAddress());
+  }, [dispatch]);
 
   return (
     <main className="flex flex-col h-screen">

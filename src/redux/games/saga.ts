@@ -8,38 +8,31 @@ import {
 } from "redux-saga/effects";
 import {
   GET_GAME,
-  GET_LEAGUE,
+  GET_IP_ADDRESS,
   GET_LEAGUE_GAME,
   getGameError,
   getGameSuccess,
-  getLeagueError,
+  getIpAddressError,
+  getIpAddressSuccess,
   getLeagueGameError,
   getLeagueGameSuccess,
-  getLeagueSuccess,
 } from "../actions";
-import {
-  GetGameRequest,
-  GetLeagueGameRequest,
-  GetLeagueRequest,
-  GetLeagueSuccess,
-} from "./types";
+import { GetGameRequest, GetGameSuccess, GetLeagueGameRequest } from "./types";
 import { api } from "../../services";
 import { Notify } from "../../utils";
+import axios from "axios";
+import { API_ROUTE } from "../../constants";
 
-type GetLeagueProps = {
-  type: string;
-  payload: GetLeagueRequest;
-};
-
-function* fetchLeague(action: GetLeagueProps): Generator {
-  const { id } = action.payload;
+function* fetchIpAddress(): Generator {
   try {
-    const response = yield call(api.get, `infoleague?infoleague=${id}`);
+    const response = yield call(axios.get, API_ROUTE.IP_ADDRESS);
 
-    const { data } = response as { data: GetLeagueSuccess };
-    yield put(getLeagueSuccess({ ...data }));
+    const { data } = response as { data: string };
+
+    yield put(getIpAddressSuccess({ ip: data }));
   } catch (error) {
-    yield put(getLeagueError({ error }));
+    console.error(error);
+    yield put(getIpAddressError({ error }));
   }
 }
 
@@ -52,12 +45,16 @@ function* fetchLeagueGames({ payload }: GetLeagueGameProps): Generator {
   const { leagueId } = payload;
 
   try {
-    const response = yield call(api.get, `league?league=${leagueId}`);
+    const response = yield call(
+      api.get,
+      API_ROUTE.GET_LEAGUE_GAME.replace("leagueId", leagueId)
+    );
     const {
       data: { games },
     } = response as { data: { games: string[] } };
     yield put(getLeagueGameSuccess({ games }));
   } catch (error) {
+    console.error(error);
     yield put(getLeagueGameError({ error }));
   }
 }
@@ -71,23 +68,23 @@ function* fetchGame({ payload }: GetGameProps): Generator {
   const { leagueId, game } = payload;
 
   try {
-    const response = yield call(api.post, "infogames", {
+    const response = yield call(api.post, API_ROUTE.GET_GAME, {
       liga: leagueId,
       game,
     });
 
-    const { data } = response as { data: GetLeagueSuccess };
+    const { data } = response as { data: GetGameSuccess };
 
     yield put(getGameSuccess({ ...data, tableData: [] }));
-    Notify({ message: "Analise feita com sucesso!", type: "success" });
   } catch (error) {
+    console.error(error);
     yield put(getGameError({ error }));
     Notify({ message: "Erro ao recuperar dados do jogo!", type: "error" });
   }
 }
 
 function* watchGetAuth() {
-  yield takeLatest(GET_LEAGUE, fetchLeague);
+  yield takeLatest(GET_IP_ADDRESS, fetchIpAddress);
   yield takeLatest(GET_LEAGUE_GAME, fetchLeagueGames);
   yield takeEvery(GET_GAME, fetchGame);
 }

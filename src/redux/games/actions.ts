@@ -2,37 +2,33 @@ import {
   GET_GAME,
   GET_GAME_ERROR,
   GET_GAME_SUCCESS,
-  GET_LEAGUE,
-  GET_LEAGUE_ERROR,
+  GET_IP_ADDRESS,
+  GET_IP_ADDRESS_ERROR,
+  GET_IP_ADDRESS_SUCCESS,
   GET_LEAGUE_GAME,
   GET_LEAGUE_GAME_ERROR,
   GET_LEAGUE_GAME_SUCCESS,
-  GET_LEAGUE_SUCCESS,
 } from "../actions";
 
 import {
   GetGameRequest,
-  GetLeagueRequest,
   GetLeagueGameRequest,
-  GetLeagueSuccess,
   GetLeagueGameSuccess,
   GetGameSuccess,
+  GetIpAddressRequest,
 } from "./types";
 
-export const getLeague = (payload: GetLeagueRequest) => {
-  return {
-    type: GET_LEAGUE,
-    payload,
-  };
-};
+export const getIpAddress = () => ({
+  type: GET_IP_ADDRESS,
+});
 
-export const getLeagueSuccess = (payload: GetLeagueSuccess) => ({
-  type: GET_LEAGUE_SUCCESS,
+export const getIpAddressSuccess = (payload: GetIpAddressRequest) => ({
+  type: GET_IP_ADDRESS_SUCCESS,
   payload,
 });
 
-export const getLeagueError = (payload: unknown) => ({
-  type: GET_LEAGUE_ERROR,
+export const getIpAddressError = (payload: unknown) => ({
+  type: GET_IP_ADDRESS_ERROR,
   payload,
 });
 

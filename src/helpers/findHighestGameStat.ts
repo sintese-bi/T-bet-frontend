@@ -18,28 +18,29 @@ export const orderedStatsKeys: HighestStatKey[] = [
 export const findHighestGameStatWithPreference = (
   game: GameStats
 ): HighestStatKey => {
-  const orderedStatsKeys: HighestStatKey[] = [
-    "home",
-    "vis",
-    "over25",
-    "over35",
-    "under25",
-  ];
+  return "home";
+  // const orderedStatsKeys: HighestStatKey[] = [
+  //   "home",
+  //   "vis",
+  //   "over25",
+  //   "over35",
+  //   "under25",
+  // ];
 
-  const stats: Record<HighestStatKey, number> = {
-    home: parseFloat(game.home),
-    vis: parseFloat(game.vis),
-    over25: parseFloat(game.over25),
-    over35: parseFloat(game.over35),
-    under25: parseFloat(game.under25),
-  };
+  // const stats: Record<HighestStatKey, number> = {
+  //   home: parseFloat(game.home),
+  //   vis: parseFloat(game.vis),
+  //   over25: parseFloat(game.over25),
+  //   over35: parseFloat(game.over35),
+  //   under25: parseFloat(game.under25),
+  // };
 
-  const highestValue: number = Math.max(...Object.values(stats));
+  // const highestValue: number = Math.max(...Object.values(stats));
 
-  const highestStats: HighestStatKey[] = Object.keys(stats).filter(
-    (key): key is HighestStatKey =>
-      stats[key as HighestStatKey] === highestValue
-  );
+  // const highestStats: HighestStatKey[] = Object.keys(stats).filter(
+  //   (key): key is HighestStatKey =>
+  //     stats[key as HighestStatKey] === highestValue
+  // );
 
-  return orderedStatsKeys.find((key) => highestStats.includes(key))!;
+  // return orderedStatsKeys.find((key) => highestStats.includes(key))!;
 };

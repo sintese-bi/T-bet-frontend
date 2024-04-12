@@ -1,13 +1,7 @@
-export type GetLeagueRequest = {
-  id: string;
-};
+export type GetIpAddressRequest = {};
 
-export type GetLeagueSuccess = {
-  home: string;
-  over25: string;
-  over35: string;
-  under25: string;
-  vis: string;
+export type GetIpAddressSuccess = {
+  ip: string;
 };
 
 export type GetLeagueGameRequest = {
@@ -23,6 +17,11 @@ export type GetGameRequest = {
   game: string;
 };
 
-export type GetGameSuccess = GetLeagueSuccess & {
+export type GetGameSuccess = {
+  home: string;
+  over25: string;
+  over35: string;
+  under25: string;
+  vis: string;
   tableData: any[];
 };

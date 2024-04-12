@@ -3,7 +3,7 @@ import { Select, Text } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
 import { RingLoader } from "react-spinners";
-import { getGame, getLeague, getLeagueGame } from "../../../redux/actions";
+import { getGame, getLeagueGame } from "../../../redux/actions";
 import { DefaultState } from "../../../redux/reducers";
 import { LEAGUE } from "../../../constants";
 import {
@@ -27,11 +27,13 @@ const HomePage: React.FC = () => {
   });
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [allowLoadingCompletion, setAllowLoadingCompletion] = useState(false);
+  const [accuracyLoadingProgress, setAccuracyLoadingProgress] = useState(0);
 
   const selectedLeague = watch("league");
   const selectedGame = watch("game");
   const highestStatKey: HighestStatKey =
     findHighestGameStatWithPreference(game);
+  console.log(game);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -62,25 +64,49 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     if (selectedGame) {
       dispatch(getGame({ leagueId: selectedLeague, game: selectedGame }));
+      setAccuracyLoadingProgress(0);
     }
   }, [selectedGame, dispatch]);
 
   useEffect(() => {
-    dispatch(getLeague({ id: selectedLeague }));
     dispatch(getLeagueGame({ leagueId: selectedLeague }));
   }, [dispatch, selectedLeague]);
+
+  useEffect(() => {
+    if (!isLoadingGames && selectedGame) {
+      const targetProgress = parseInt(
+        formatGameStatsPorcentage(game[highestStatKey]),
+        10
+      );
+      const interval = setInterval(() => {
+        setAccuracyLoadingProgress((prevProgress) => {
+          if (prevProgress >= targetProgress) {
+            clearInterval(interval);
+            return targetProgress;
+          }
+          return prevProgress + 1;
+        });
+      }, 100);
+
+      return () => clearInterval(interval);
+    }
+  }, [isLoadingGames, selectedGame, game, highestStatKey]);
 
   return (
     <form className="max-w-7xl w-full m-auto mt-5 flex flex-col gap-10">
       {/* CREDIT */}
-      <section className="bg-[#232323] text-green-400 rounded-lg flex flex-wrap justify-center items-center p-4 gap-5 lg:gap-0 lg:justify-between ">
+      <section className="text-white rounded-lg flex flex-wrap justify-center items-center p-4 gap-5 lg:gap-0 lg:justify-between ">
         <div className="flex gap-4">
           <p>QUANTIDADE DE PESQUISAS GRATUITAS</p>
           <p>0/3</p>
         </div>
-        <button className="bg-red-500 p-2 rounded-md text-white ">
+        <a
+          target="_blank"
+          href="https://buy.stripe.com/7sIbMl6Jx8T28Rq9Bo"
+          className="bg-green-400 p-2 rounded-md text-white "
+        >
           Comprar créditos
-        </button>
+        </a>
       </section>
 
       {/* SELECTORS */}
@@ -127,7 +153,7 @@ const HomePage: React.FC = () => {
       {/* GAME INFO */}
       {isLoadingGames ? (
         <section
-          className={`max-w-lg w-full m-auto bg-[#232323] p-8 rounded-2xl gap-14 `}
+          className={`max-w-lg w-full m-auto bg-[#232323] p-8 rounded-2xl gap-14 self-center`}
         >
           <div className="self-center flex flex-col items-center">
             <RingLoader color="#ffbf69" />
@@ -139,20 +165,32 @@ const HomePage: React.FC = () => {
       ) : (
         <>
           {selectedGame && (
-            <section className={`max-w-lg w-full grad p-8 rounded-2xl`}>
+            <section className={`max-w-lg w-full p-8 rounded-2xl self-center`}>
               {/* GAME STATS */}
-              <div className="flex flex-wrap gap-2 justify-center ">
+              <div className="flex flex-col flex-wrap gap-5 items-center ">
                 {orderedStatsKeys.map((key: HighestStatKey) =>
                   highestStatKey === key ? (
-                    <div key={key} className={``}>
-                      <Text>
-                        Mercado: <b>{formatGameStatsLabel(key)}</b>
-                      </Text>
+                    <>
+                      <div className="flex flex-col items-center">
+                        <Text className="text-2xl">Mercado</Text>
+                        <Text className="text-green-400">
+                          <b>{formatGameStatsLabel(key)}</b>
+                        </Text>
+                      </div>
 
-                      <Text>
-                        Acurácia: <b>{formatGameStatsPorcentage(game[key])}</b>
-                      </Text>
-                    </div>
+                      <div className="flex flex-col w-full items-center">
+                        <Text className="text-2xl">Acurácia</Text>
+                        <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                          <div
+                            className="bg-green-400 h-2.5 rounded-full"
+                            style={{ width: `${accuracyLoadingProgress}%` }}
+                          ></div>
+                        </div>
+                        <Text>
+                          <b>{accuracyLoadingProgress}%</b>
+                        </Text>
+                      </div>
+                    </>
                   ) : (
                     <></>
                   )

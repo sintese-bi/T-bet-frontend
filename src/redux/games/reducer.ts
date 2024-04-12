@@ -2,30 +2,30 @@ import { Reducer } from "redux";
 import {
   GetGameRequest,
   GetGameSuccess,
+  GetIpAddressSuccess,
   GetLeagueGameRequest,
   GetLeagueGameSuccess,
-  GetLeagueRequest,
-  GetLeagueSuccess,
 } from "./types";
 import {
   GET_GAME,
   GET_GAME_ERROR,
   GET_GAME_SUCCESS,
-  GET_LEAGUE,
-  GET_LEAGUE_ERROR,
+  GET_IP_ADDRESS,
+  GET_IP_ADDRESS_ERROR,
+  GET_IP_ADDRESS_SUCCESS,
   GET_LEAGUE_GAME,
   GET_LEAGUE_GAME_ERROR,
   GET_LEAGUE_GAME_SUCCESS,
-  GET_LEAGUE_SUCCESS,
 } from "../actions";
 
 type GameState = {
+  user: string;
   leagues: string[];
   game: GetGameSuccess;
   games: string[];
-  gameStats: GetLeagueSuccess;
+  gameStats: GetGameSuccess;
+  isIpAddressLoading: boolean;
   isLoadingGameStats: boolean;
-  isLoadingLeagues: boolean;
   isLoadingLeagueGames: boolean;
   isLoadingGames: boolean;
   error: any;
@@ -37,11 +37,12 @@ type GameAction = {
     | GetLeagueGameRequest
     | GetLeagueGameSuccess
     | GetGameRequest
-    | GetLeagueRequest
-    | GetLeagueSuccess;
+    | GetGameSuccess
+    | GetIpAddressSuccess;
 };
 
 const initialState: GameState = {
+  user: "",
   leagues: [],
   game: {
     home: "",
@@ -58,9 +59,10 @@ const initialState: GameState = {
     over35: "",
     under25: "",
     vis: "",
+    tableData: [],
   },
+  isIpAddressLoading: false,
   isLoadingGameStats: false,
-  isLoadingLeagues: false,
   isLoadingLeagueGames: false,
   isLoadingGames: false,
   error: null,
@@ -71,26 +73,26 @@ const AuthReducer: Reducer<GameState, GameAction> = (
   action
 ) => {
   switch (action.type) {
-    case GET_LEAGUE: {
+    case GET_IP_ADDRESS: {
       return {
         ...state,
-        isLoadingGameStats: true,
+        isIpAddressLoading: true,
       };
     }
 
-    case GET_LEAGUE_SUCCESS: {
-      const payload = action.payload as GetLeagueSuccess;
+    case GET_IP_ADDRESS_SUCCESS: {
+      const payload = action.payload as GetIpAddressSuccess;
       return {
         ...state,
-        gameStats: { ...payload },
-        isLoadingGameStats: false,
+        isIpAddressLoading: false,
+        user: payload.ip,
       };
     }
 
-    case GET_LEAGUE_ERROR: {
+    case GET_IP_ADDRESS_ERROR: {
       return {
         ...state,
-        isLoadingGameStats: false,
+        isIpAddressLoading: false,
         error: action.payload,
       };
     }
