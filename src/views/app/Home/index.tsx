@@ -33,7 +33,6 @@ const HomePage: React.FC = () => {
   const selectedGame = watch("game");
   const highestStatKey: HighestStatKey =
     findHighestGameStatWithPreference(game);
-  console.log(game);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
