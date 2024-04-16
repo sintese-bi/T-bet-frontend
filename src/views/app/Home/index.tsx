@@ -13,6 +13,10 @@ import {
   formatGameStatsPorcentage,
   orderedStatsKeys,
 } from "../../../helpers";
+import { Notify } from "../../../utils";
+
+import Confetti from "react-confetti";
+import { useGetWindow } from "../../../hooks/useGetWindow";
 
 const HomePage: React.FC = () => {
   const dispatch = useDispatch();
@@ -25,15 +29,39 @@ const HomePage: React.FC = () => {
       game: "",
     },
   });
+
+  const MAX_CREDITS = 3;
+  const customWindow = useGetWindow();
+
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [allowLoadingCompletion, setAllowLoadingCompletion] = useState(false);
   const [accuracyLoadingProgress, setAccuracyLoadingProgress] = useState(0);
+  const [credits, setCredits] = useState(0);
 
   const selectedLeague = watch("league");
   const selectedGame = watch("game");
+
   const highestStatKey: HighestStatKey =
     findHighestGameStatWithPreference(game);
 
+  const handleAddCredit = () => setCredits((prev) => prev + 1);
+  // const handleRemoveCredit = () => setCredits((prev) => prev - 1);
+
+  const changeAccuracyColor = (accuracy: number) => {
+    if (accuracy >= 90) return "bg-green-400";
+    if (accuracy >= 68) return "bg-yellow-400";
+    return "bg-red-400";
+  };
+
+  const handleWarningText = (accuracy: number) => {
+    if (accuracy >= 90)
+      return "Temos confiança que o mercado informado será o resultado dessa partida.";
+    if (accuracy >= 68)
+      return "Pelas nossas análises existem boas chances do mercado indicado ser o resultado da partida.";
+    return "Cuidado, nosso algoritmo não recomenda entrar nessa partida.";
+  };
+
+  // LOADING PROGRESS
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isLoadingGames || allowLoadingCompletion) {
@@ -53,24 +81,33 @@ const HomePage: React.FC = () => {
 
     return () => clearInterval(interval);
   }, [isLoadingGames, allowLoadingCompletion]);
-
+  // LOADING PROGRESS
   useEffect(() => {
     if (!isLoadingGames && loadingProgress < 100) {
       setAllowLoadingCompletion(true);
     }
   }, [isLoadingGames, loadingProgress]);
 
+  // SELECT GAME EFFECT
   useEffect(() => {
+    if (credits === MAX_CREDITS) {
+      Notify({ message: "Você atingiu o limite de consultas.", type: "error" });
+      return;
+    }
+
     if (selectedGame) {
       dispatch(getGame({ leagueId: selectedLeague, game: selectedGame }));
       setAccuracyLoadingProgress(0);
+      handleAddCredit();
     }
   }, [selectedGame, dispatch]);
 
+  // SELECT LEAGUE EFFECT
   useEffect(() => {
     dispatch(getLeagueGame({ leagueId: selectedLeague }));
   }, [dispatch, selectedLeague]);
 
+  // ACCURACY LOADING PROGRESS
   useEffect(() => {
     if (!isLoadingGames && selectedGame) {
       const targetProgress = parseInt(
@@ -93,19 +130,32 @@ const HomePage: React.FC = () => {
 
   return (
     <form className="max-w-7xl w-full m-auto mt-5 flex flex-col gap-10">
+      <Confetti
+        recycle={false}
+        width={customWindow.width}
+        height={customWindow.height}
+      />
+
       {/* CREDIT */}
       <section className="text-white rounded-lg flex flex-wrap justify-center items-center p-4 gap-5 lg:gap-0 lg:justify-between ">
-        <div className="flex gap-4">
-          <p>QUANTIDADE DE PESQUISAS GRATUITAS</p>
-          <p>0/3</p>
+        <div className="flex justify-between items-center w-full gap-4">
+          <div className="flex gap-4">
+            <p>CRÉDITOS</p>
+            <p>{credits}/3</p>
+          </div>
+          <a
+            target="_blank"
+            href="https://buy.stripe.com/7sIbMl6Jx8T28Rq9Bo"
+            className="bg-green-400 p-2 rounded-md text-white text-center"
+          >
+            Comprar créditos
+          </a>
         </div>
-        <a
-          target="_blank"
-          href="https://buy.stripe.com/7sIbMl6Jx8T28Rq9Bo"
-          className="bg-green-400 p-2 rounded-md text-white "
-        >
-          Comprar créditos
-        </a>
+        <div>
+          R$ 1,00 por crédito. Cada crédito lhe dá 1 opção de consulta aos
+          jogos. Você pode comprar quantos créditos quiser, basta clicar no
+          botão acima comprar créditos.
+        </div>
       </section>
 
       {/* SELECTORS */}
@@ -181,12 +231,17 @@ const HomePage: React.FC = () => {
                         <Text className="text-2xl">Acurácia</Text>
                         <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                           <div
-                            className="bg-green-400 h-2.5 rounded-full"
+                            className={`${changeAccuracyColor(accuracyLoadingProgress)} h-2.5 rounded-full`}
                             style={{ width: `${accuracyLoadingProgress}%` }}
                           ></div>
                         </div>
                         <Text>
                           <b>{accuracyLoadingProgress}%</b>
+                        </Text>
+                      </div>
+                      <div className="text-center">
+                        <Text>
+                          {handleWarningText(accuracyLoadingProgress)}
                         </Text>
                       </div>
                     </>

@@ -14,7 +14,7 @@ const LandingPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const goToHome = () => navigate(BROWSER_ROUTE.HOME);
+  const goToHome = () => navigate(BROWSER_ROUTE.LOGIN);
 
   useEffect(() => {
     dispatch(getIpAddress());
