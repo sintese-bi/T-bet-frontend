@@ -137,7 +137,7 @@ const HomePage: React.FC = () => {
       />
 
       {/* CREDIT */}
-      <section className="text-white rounded-lg flex flex-wrap justify-center items-center p-4 gap-5 lg:gap-0 lg:justify-between ">
+      <section className="text-white rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:gap-0 lg:justify-between border-2 border-yellow-400">
         <div className="flex justify-between items-center w-full gap-4">
           <div className="flex gap-4">
             <p>CRÉDITOS</p>
@@ -159,7 +159,7 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* SELECTORS */}
-      <section className="flex flex-wrap justify-center gap-10 md:gap-52 lg:flex-nowrap">
+      <section className="flex flex-wrap justify-center gap-10 md:gap-52 lg:flex-nowrap border-2 border-yellow-400 rounded-2xl p-4">
         <div className="w-full">
           <h1 className="text-2xl font-bold text-center lg:text-left">
             Selecione a liga
@@ -202,7 +202,7 @@ const HomePage: React.FC = () => {
       {/* GAME INFO */}
       {isLoadingGames ? (
         <section
-          className={`max-w-lg w-full m-auto bg-[#232323] p-8 rounded-2xl gap-14 self-center`}
+          className={`max-w-lg w-full m-auto bg-[#232323] p-8 rounded-2xl gap-14 self-center border-2 border-yellow-400`}
         >
           <div className="self-center flex flex-col items-center">
             <RingLoader color="#ffbf69" />
@@ -214,7 +214,9 @@ const HomePage: React.FC = () => {
       ) : (
         <>
           {selectedGame && (
-            <section className={`max-w-lg w-full p-8 rounded-2xl self-center`}>
+            <section
+              className={`max-w-lg w-full p-8 rounded-2xl self-center border-2 border-yellow-400`}
+            >
               {/* GAME STATS */}
               <div className="flex flex-col flex-wrap gap-5 items-center ">
                 {orderedStatsKeys.map((key: HighestStatKey) =>

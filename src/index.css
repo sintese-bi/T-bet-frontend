@@ -6,7 +6,11 @@
   background-image: linear-gradient(to right, #ffbf69, #99733f);
 }
 
-#root {
+body {
   background-color: #000;
   height: 100vh;
+}
+
+#root {
+  height: 100%;
 }
