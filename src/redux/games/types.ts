@@ -18,10 +18,7 @@ export type GetGameRequest = {
 };
 
 export type GetGameSuccess = {
-  home: string;
-  over25: string;
-  over35: string;
-  under25: string;
-  vis: string;
+  bet: string;
+  prob: number;
   tableData: any[];
 };

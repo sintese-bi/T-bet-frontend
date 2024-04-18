@@ -1,6 +1,5 @@
 import { RingLoader } from "react-spinners";
 import {
-  HighestStatKey,
   formatGameStatsLabel,
   formatGameStatsPorcentage,
 } from "../../../../helpers";
@@ -11,15 +10,11 @@ import { useEffect, useState } from "react";
 
 type Props = {
   selectedGame: any;
-  orderedStatsKeys: HighestStatKey[];
-  highestStatKey: HighestStatKey;
   accuracyLoadingProgress: number;
   setAccuracyLoadingProgress: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const DisplayGame = ({
-  highestStatKey,
-  orderedStatsKeys,
   selectedGame,
   accuracyLoadingProgress,
   setAccuracyLoadingProgress,
@@ -74,7 +69,7 @@ const DisplayGame = ({
   useEffect(() => {
     if (!isLoadingGames && selectedGame) {
       const targetProgress =
-        parseInt(formatGameStatsPorcentage(game[highestStatKey]), 10) || 0;
+        parseInt(formatGameStatsPorcentage(String(game.prob)), 10) || 0;
       const interval = setInterval(() => {
         setAccuracyLoadingProgress((prevProgress) => {
           if (prevProgress >= targetProgress) {
@@ -87,7 +82,7 @@ const DisplayGame = ({
 
       return () => clearInterval(interval);
     }
-  }, [isLoadingGames, selectedGame, game, highestStatKey]);
+  }, [isLoadingGames, selectedGame, game.prob, setAccuracyLoadingProgress]);
 
   return (
     <>
@@ -110,38 +105,28 @@ const DisplayGame = ({
             >
               {/* GAME STATS */}
               <div className="flex flex-col flex-wrap gap-5 items-center ">
-                {orderedStatsKeys.map((key: HighestStatKey) =>
-                  highestStatKey === key ? (
-                    <>
-                      <div className="flex flex-col items-center">
-                        <Text className="text-2xl">Mercado</Text>
-                        <Text className="text-green-400">
-                          <b>{formatGameStatsLabel(key)}</b>
-                        </Text>
-                      </div>
+                <div className="flex flex-col items-center">
+                  <Text className="text-2xl">Mercado</Text>
+                  <Text className="text-green-400">
+                    <b>{formatGameStatsLabel(game.bet)}</b>
+                  </Text>
+                </div>
 
-                      <div className="flex flex-col w-full items-center">
-                        <Text className="text-2xl">Acurácia</Text>
-                        <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                          <div
-                            className={`${changeAccuracyColor(accuracyLoadingProgress)} h-2.5 rounded-full`}
-                            style={{ width: `${accuracyLoadingProgress}%` }}
-                          ></div>
-                        </div>
-                        <Text>
-                          <b>{accuracyLoadingProgress}%</b>
-                        </Text>
-                      </div>
-                      <div className="text-center">
-                        <Text>
-                          {handleWarningText(accuracyLoadingProgress)}
-                        </Text>
-                      </div>
-                    </>
-                  ) : (
-                    <></>
-                  )
-                )}
+                <div className="flex flex-col w-full items-center">
+                  <Text className="text-2xl">Acurácia</Text>
+                  <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                    <div
+                      className={`${changeAccuracyColor(accuracyLoadingProgress)} h-2.5 rounded-full`}
+                      style={{ width: `${accuracyLoadingProgress}%` }}
+                    ></div>
+                  </div>
+                  <Text>
+                    <b>{accuracyLoadingProgress}%</b>
+                  </Text>
+                </div>
+                <div className="text-center">
+                  <Text>{handleWarningText(accuracyLoadingProgress)}</Text>
+                </div>
               </div>
             </section>
           )}

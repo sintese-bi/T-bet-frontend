@@ -3,14 +3,16 @@ import { useSessionCheck } from "../../../hooks";
 import { useEffect } from "react";
 import { BROWSER_ROUTE } from "../../../constants";
 import { Button } from "@mantine/core";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loggoutUser } from "../../../redux/user/actions";
+import { DefaultState } from "../../../redux/reducers";
 
 const AppLayout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const isUserAuthenticated = useSessionCheck();
+  const { user } = useSelector((state: DefaultState) => state.auth);
 
   const isHomePage = location.pathname === BROWSER_ROUTE.HOME;
 
@@ -18,15 +20,6 @@ const AppLayout = () => {
     window.open("https://api.whatsapp.com/send?phone=553192932316");
   };
   const handleLoggout = () => dispatch(loggoutUser({ navigate }));
-
-  useEffect(() => {
-    console.log("isUserAuthenticated", isUserAuthenticated);
-    console.log("isHomePage", isHomePage);
-    if (!isUserAuthenticated && isHomePage) {
-      navigate(BROWSER_ROUTE.LOGIN);
-      return;
-    }
-  }, [isUserAuthenticated, navigate, isHomePage]);
 
   return (
     <main className="flex flex-col px-4 lg:px-12 bg-black text-white h-full">

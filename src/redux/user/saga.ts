@@ -52,7 +52,7 @@ function* getUserCall(action: GetUserCallProps): Generator {
     const error = e as Error;
     console.error(error);
 
-    yield put(getUserError(e));
+    yield put(getUserError(error.message));
   }
 }
 
@@ -96,7 +96,7 @@ function* updateUserCall(action: UpdateUserCallProps): Generator {
   } catch (e) {
     const error = e as Error;
     console.error(error);
-    yield put(updateUserError(e));
+    yield put(updateUserError(error.message));
   }
 }
 
@@ -128,7 +128,8 @@ function* loginUserCall(action: LoginUserCallProps): Generator {
   } catch (e) {
     const error = e as Error;
     console.error(error);
-    yield put(getUserError(e));
+    Notify({ message: "Email ou senha inválida", type: "error" });
+    yield put(getUserError(error.message));
   }
 }
 
@@ -147,7 +148,7 @@ function* loggoutUserCall(action: LoggoutUserCallProps): Generator {
     Notify({ message: "Desconectado com sucesso!", type: "success" });
   } catch (e) {
     const error = e as Error;
-    console.error(error);
+    console.error(error.message);
   }
 }
 
@@ -158,7 +159,7 @@ function* buyCreditsCall(): Generator {
     yield put(buyCreditsSuccess());
   } catch (e) {
     const error = e as Error;
-    console.error(error);
+    console.error(error.message);
 
     yield put(buyCreditsError());
   }

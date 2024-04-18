@@ -4,12 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
 import { getGame, getLeagueGame } from "../../../redux/actions";
 import { DefaultState } from "../../../redux/reducers";
-import { LEAGUE } from "../../../constants";
-import {
-  HighestStatKey,
-  findHighestGameStatWithPreference,
-  orderedStatsKeys,
-} from "../../../helpers";
+import { BROWSER_ROUTE, LEAGUE } from "../../../constants";
 import { Notify } from "../../../utils";
 
 import Confetti from "react-confetti";
@@ -17,8 +12,11 @@ import { useGetWindow } from "../../../hooks/useGetWindow";
 import { getUser, updateUser } from "../../../redux/user/actions";
 import DisplayGame from "./components/DisplayGame";
 import { RingLoader } from "react-spinners";
+import { useSessionCheck } from "../../../hooks";
+import { useNavigate } from "react-router-dom";
 
 const HomePage: React.FC = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user, isUserLoading } = useSelector(
     (state: DefaultState) => state.auth
@@ -38,9 +36,6 @@ const HomePage: React.FC = () => {
 
   const selectedLeague = watch("league");
   const selectedGame = watch("game");
-
-  const highestStatKey: HighestStatKey =
-    findHighestGameStatWithPreference(game);
 
   const handleHasReachedLimit = () => user.credits === 0;
 
@@ -63,6 +58,16 @@ const HomePage: React.FC = () => {
     if (isUserLoading) return;
     dispatch(getUser({ email: user.email }));
   }, [dispatch]);
+
+  const isUserAuthenticated = useSessionCheck();
+
+  useEffect(() => {
+    console.log(!isUserAuthenticated);
+    if (!isUserAuthenticated) {
+      navigate(BROWSER_ROUTE.LOGIN);
+      return;
+    }
+  }, [isUserAuthenticated, navigate]);
 
   return isUserLoading ? (
     <section className="flex justify-center items-center h-full">
@@ -152,8 +157,6 @@ const HomePage: React.FC = () => {
 
       {/* GAME INFO */}
       <DisplayGame
-        highestStatKey={highestStatKey}
-        orderedStatsKeys={orderedStatsKeys}
         selectedGame={selectedGame}
         accuracyLoadingProgress={accuracyLoadingProgress}
         setAccuracyLoadingProgress={setAccuracyLoadingProgress}

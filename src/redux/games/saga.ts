@@ -76,7 +76,7 @@ function* fetchGame({ payload }: GetGameProps): Generator {
 
     const { data } = response as { data: GetGameSuccess };
 
-    yield put(getGameSuccess({ ...data, tableData: [] }));
+    yield put(getGameSuccess({ ...data }));
   } catch (error) {
     console.error(error);
     yield put(getGameError({ error }));
