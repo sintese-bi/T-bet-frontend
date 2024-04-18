@@ -2,9 +2,12 @@ import { Button, PasswordInput, Text, TextInput } from "@mantine/core";
 import { BROWSER_ROUTE } from "../../../constants";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../../../redux/user/actions";
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const {
     register,
     formState: { errors },
@@ -17,7 +20,9 @@ const LoginPage: React.FC = () => {
   });
 
   const onSubmit = (data: any) => {
-    navigate(BROWSER_ROUTE.HOME);
+    dispatch(
+      loginUser({ email: data.email, password: data.password, navigate })
+    );
   };
 
   return (

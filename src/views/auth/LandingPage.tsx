@@ -2,13 +2,12 @@ import { useNavigate } from "react-router-dom";
 import { BROWSER_ROUTE } from "../../constants";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import { Pagination } from "swiper/modules";
-
-import "swiper/css";
-import "swiper/css/pagination";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { getIpAddress } from "../../redux/actions";
+
+import "swiper/css";
+import "swiper/css/pagination";
 
 const LandingPage = () => {
   const dispatch = useDispatch();
@@ -26,8 +25,8 @@ const LandingPage = () => {
         <img src={"/logo.png"} alt="Tbet logo" />
 
         <p className="text-green-400 font-bold text-center">
-          SOMOS O PRIMEIRO GRUPO NO BRASIL A UTILIZAR CHAT GPT-4 PARA ANÁLISE DO
-          MERCADO.
+          SOMOS O PRIMEIRO SISTEMA NO BRASIL A UTILIZAR CHAT GPT-4 PARA ANÁLISE
+          DO MERCADO.
         </p>
       </section>
       <section className="bg-[url('/banner.png')] flex-1 bg-cover bg-no-repeat bg-center lg:bg-cover lg:bg-no-repeat lg:bg-center flex justify-center items-center">
@@ -36,12 +35,7 @@ const LandingPage = () => {
         </button>
       </section>
       <section className="max-w-2xl w-full mx-auto py-5 px-3 my-5">
-        <Swiper
-          modules={[Pagination]}
-          pagination={{
-            dynamicBullets: true,
-          }}
-        >
+        <Swiper>
           <SwiperSlide>
             <div className="flex flex-col gap-3">
               <h1 className="text-center text-2xl font-bold">Quem Somos?</h1>

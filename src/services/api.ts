@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const apiURL = "https://api.tbet.com.br/v2/";
+const apiURL = "https://api.tbet.com.br";
 
 const api = axios.create({
   baseURL: apiURL,

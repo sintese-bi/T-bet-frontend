@@ -2,6 +2,9 @@ import {
   GET_USER,
   GET_USER_ERROR,
   GET_USER_SUCCESS,
+  LOGGOUT_USER,
+  LOGGOUT_USER_ERROR,
+  LOGGOUT_USER_SUCCESS,
   LOGIN_USER,
   LOGIN_USER_ERROR,
   LOGIN_USER_SUCCESS,
@@ -12,14 +15,22 @@ import {
   UPDATE_USER_ERROR,
   UPDATE_USER_SUCCESS,
 } from "../actions";
-import { GetUserRequest } from "./types";
+import {
+  GetUserRequest,
+  GetUserSuccess,
+  LoggoutUserRequest,
+  LoginUserRequest,
+  LoginUserSuccess,
+  RegisterUserRequest,
+  UpdateUserRequest,
+} from "./types";
 
-export const getUser = (email: GetUserRequest) => ({
+export const getUser = (payload: GetUserRequest) => ({
   type: GET_USER,
-  payload: email,
+  payload,
 });
 
-export const getUserSuccess = (payload: any) => ({
+export const getUserSuccess = (payload: GetUserSuccess) => ({
   type: GET_USER_SUCCESS,
   payload,
 });
@@ -29,7 +40,7 @@ export const getUserError = (payload: any) => ({
   payload,
 });
 
-export const updateUser = (payload: any) => ({
+export const updateUser = (payload: UpdateUserRequest) => ({
   type: UPDATE_USER,
   payload,
 });
@@ -44,12 +55,12 @@ export const updateUserError = (payload: any) => ({
   payload,
 });
 
-export const loginUser = (payload: any) => ({
+export const loginUser = (payload: LoginUserRequest) => ({
   type: LOGIN_USER,
   payload,
 });
 
-export const loginUserSuccess = (payload: any) => ({
+export const loginUserSuccess = (payload: LoginUserSuccess) => ({
   type: LOGIN_USER_SUCCESS,
   payload,
 });
@@ -59,7 +70,7 @@ export const loginUserError = (payload: any) => ({
   payload,
 });
 
-export const registerUser = (payload: any) => ({
+export const registerUser = (payload: RegisterUserRequest) => ({
   type: REGISTER_USER,
   payload,
 });
@@ -71,5 +82,20 @@ export const registerUserSuccess = (payload: any) => ({
 
 export const registerUserError = (payload: any) => ({
   type: REGISTER_USER_ERROR,
+  payload,
+});
+
+export const loggoutUser = (payload: LoggoutUserRequest) => ({
+  type: LOGGOUT_USER,
+  payload,
+});
+
+export const loggoutUserSuccess = (payload: any) => ({
+  type: LOGGOUT_USER_SUCCESS,
+  payload,
+});
+
+export const loggoutUserError = (payload: any) => ({
+  type: LOGGOUT_USER_ERROR,
   payload,
 });

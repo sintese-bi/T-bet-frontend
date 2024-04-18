@@ -26,4 +26,8 @@ export const UPDATE_USER = "UPDATE_USER";
 export const UPDATE_USER_SUCCESS = "UPDATE_USER_SUCCESS";
 export const UPDATE_USER_ERROR = "UPDATE_USER_ERROR";
 
+export const LOGGOUT_USER = "LOGGOUT_USER";
+export const LOGGOUT_USER_SUCCESS = "LOGGOUT_USER_SUCCESS";
+export const LOGGOUT_USER_ERROR = "LOGGOUT_USER_ERROR";
+
 export * from "./games/actions";
