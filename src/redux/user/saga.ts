@@ -89,8 +89,6 @@ function* updateUserCall(action: UpdateUserCallProps): Generator {
       use_quant: credits,
     });
 
-    console.log(user);
-
     yield put(updateUserSuccess(user));
   } catch (e) {
     const error = e as Error;
