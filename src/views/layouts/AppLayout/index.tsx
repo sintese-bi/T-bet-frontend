@@ -20,6 +20,8 @@ const AppLayout = () => {
   const handleLoggout = () => dispatch(loggoutUser({ navigate }));
 
   useEffect(() => {
+    console.log("isUserAuthenticated", isUserAuthenticated);
+    console.log("isHomePage", isHomePage);
     if (!isUserAuthenticated && isHomePage) {
       navigate(BROWSER_ROUTE.LOGIN);
       return;

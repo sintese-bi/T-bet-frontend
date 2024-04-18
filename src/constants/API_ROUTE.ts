@@ -6,4 +6,5 @@ export const API_ROUTE = {
   LOGIN_USER: "/v1/login",
   GET_USER: "/v1/userinfo",
   UPDATE_USER: "/v1/userupdate",
+  BUY_CREDITS: "/stripe-webhook",
 };

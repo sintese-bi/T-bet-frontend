@@ -10,6 +10,9 @@ import {
   User,
 } from "./types";
 import {
+  BUY_CREDITS,
+  BUY_CREDITS_ERROR,
+  BUY_CREDITS_SUCCESS,
   GET_USER,
   GET_USER_ERROR,
   GET_USER_SUCCESS,
@@ -103,6 +106,18 @@ const UserReducer: Reducer<UserState, UserAction> = (
       };
     }
 
+    case BUY_CREDITS_SUCCESS: {
+      return {
+        ...state,
+      };
+    }
+
+    case BUY_CREDITS: {
+      return {
+        ...state,
+      };
+    }
+
     case UPDATE_USER: {
       return {
         ...state,
@@ -137,6 +152,7 @@ const UserReducer: Reducer<UserState, UserAction> = (
       };
     }
 
+    case BUY_CREDITS_ERROR:
     case LOGGOUT_USER_ERROR:
     case GET_USER_ERROR:
     case REGISTER_USER_ERROR:

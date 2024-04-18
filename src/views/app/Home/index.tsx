@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Select } from "@mantine/core";
+import { Button, Select } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
 import { getGame, getLeagueGame } from "../../../redux/actions";
@@ -14,7 +14,7 @@ import { Notify } from "../../../utils";
 
 import Confetti from "react-confetti";
 import { useGetWindow } from "../../../hooks/useGetWindow";
-import { getUser, updateUser } from "../../../redux/user/actions";
+import { buyCredits, getUser, updateUser } from "../../../redux/user/actions";
 import DisplayGame from "./components/DisplayGame";
 import { RingLoader } from "react-spinners";
 
@@ -43,6 +43,9 @@ const HomePage: React.FC = () => {
     findHighestGameStatWithPreference(game);
 
   const handleHasReachedLimit = () => user.credits === 0;
+  const handleBuyCredits = () => {
+    dispatch(buyCredits());
+  };
 
   // SELECT GAME EFFECT
   useEffect(() => {
@@ -83,13 +86,12 @@ const HomePage: React.FC = () => {
             <p>CRÉDITOS:</p>
             <p>{user.credits}</p>
           </div>
-          <a
-            target="_blank"
-            href="https://buy.stripe.com/7sIbMl6Jx8T28Rq9Bo"
+          <Button
+            onClick={handleBuyCredits}
             className="bg-green-400 p-2 rounded-md text-white text-center"
           >
             Comprar créditos
-          </a>
+          </Button>
         </div>
         <div>
           R$ 1,00 por crédito. Cada crédito lhe dá 1 opção de consulta aos

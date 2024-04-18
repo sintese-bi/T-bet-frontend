@@ -1,4 +1,7 @@
 import {
+  BUY_CREDITS,
+  BUY_CREDITS_ERROR,
+  BUY_CREDITS_SUCCESS,
   GET_USER,
   GET_USER_ERROR,
   GET_USER_SUCCESS,
@@ -98,4 +101,16 @@ export const loggoutUserSuccess = (payload: any) => ({
 export const loggoutUserError = (payload: any) => ({
   type: LOGGOUT_USER_ERROR,
   payload,
+});
+
+export const buyCredits = () => ({
+  type: BUY_CREDITS,
+});
+
+export const buyCreditsSuccess = () => ({
+  type: BUY_CREDITS_SUCCESS,
+});
+
+export const buyCreditsError = () => ({
+  type: BUY_CREDITS_ERROR,
 });

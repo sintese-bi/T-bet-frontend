@@ -9,6 +9,7 @@ import {
   User,
 } from "./types";
 import {
+  BUY_CREDITS,
   GET_USER,
   LOGGOUT_USER,
   LOGIN_USER,
@@ -16,6 +17,8 @@ import {
   UPDATE_USER,
 } from "../actions";
 import {
+  buyCreditsError,
+  buyCreditsSuccess,
   getUserError,
   getUserSuccess,
   loginUserSuccess,
@@ -148,12 +151,26 @@ function* loggoutUserCall(action: LoggoutUserCallProps): Generator {
   }
 }
 
+function* buyCreditsCall(): Generator {
+  try {
+    const user = yield call(userApi.post, API_ROUTE.BUY_CREDITS);
+    console.log(user);
+    yield put(buyCreditsSuccess());
+  } catch (e) {
+    const error = e as Error;
+    console.error(error);
+
+    yield put(buyCreditsError());
+  }
+}
+
 function* watchGetAuth() {
   yield takeEvery(GET_USER, getUserCall);
   yield takeEvery(LOGIN_USER, loginUserCall);
   yield takeEvery(UPDATE_USER, updateUserCall);
   yield takeEvery(REGISTER_USER, registerUserCall);
   yield takeEvery(LOGGOUT_USER, loggoutUserCall);
+  yield takeEvery(BUY_CREDITS, buyCreditsCall);
 }
 
 export default function* rootSaga() {
