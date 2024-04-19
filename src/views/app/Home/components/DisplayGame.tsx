@@ -88,7 +88,7 @@ const DisplayGame = ({
     <>
       {isLoadingGames ? (
         <section
-          className={`max-w-lg w-full m-auto bg-[#232323] p-8 rounded-2xl gap-14 self-center border-2 border-yellow-400`}
+          className={`max-w-lg w-full bg-[#232323] p-8 rounded-2xl gap-14 self-center border-2 border-yellow-400`}
         >
           <div className="self-center flex flex-col items-center">
             <RingLoader color="#ffbf69" />

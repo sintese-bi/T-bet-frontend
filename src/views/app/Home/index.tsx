@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Select } from "@mantine/core";
+import { Button, Select } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
 import { getGame, getLeagueGame } from "../../../redux/actions";
@@ -21,10 +21,10 @@ const HomePage: React.FC = () => {
   const { user, isUserLoading } = useSelector(
     (state: DefaultState) => state.auth
   );
-  const { games, game, isLoadingGames } = useSelector(
+  const { games, isLoadingGames } = useSelector(
     (state: DefaultState) => state.games
   );
-  const { control, watch } = useForm({
+  const { control, watch, handleSubmit } = useForm({
     defaultValues: {
       league: LEAGUE.EURO,
       game: "",
@@ -32,21 +32,27 @@ const HomePage: React.FC = () => {
   });
 
   const [accuracyLoadingProgress, setAccuracyLoadingProgress] = useState(0);
+  const [dispatchedGame, setDispatchedGame] = useState("");
   const customWindow = useGetWindow();
 
   const selectedLeague = watch("league");
   const selectedGame = watch("game");
 
   const handleHasReachedLimit = () => user.credits === 0;
-
-  // SELECT GAME EFFECT
-  useEffect(() => {
-    if (selectedGame) {
-      dispatch(getGame({ leagueId: selectedLeague, game: selectedGame }));
-      setAccuracyLoadingProgress(0);
-      dispatch(updateUser({ email: user.email, credits: user.credits - 1 }));
+  const handleResetDispatchedGame = () => setDispatchedGame("");
+  const onSubmit = () => {
+    if (handleHasReachedLimit()) {
+      Notify({
+        message: "Você atingiu o limite de consultas.",
+        type: "error",
+      });
+      return;
     }
-  }, [selectedGame, dispatch]);
+    dispatch(getGame({ leagueId: selectedLeague, game: selectedGame }));
+    setAccuracyLoadingProgress(0);
+    dispatch(updateUser({ email: user.email, credits: user.credits - 1 }));
+    setDispatchedGame(selectedGame);
+  };
 
   // SELECT LEAGUE EFFECT
   useEffect(() => {
@@ -91,7 +97,7 @@ const HomePage: React.FC = () => {
           <a
             target="_blank"
             href="https://buy.stripe.com/7sIbMl6Jx8T28Rq9Bo"
-            className="bg-green-400 p-2 rounded-md text-white text-center"
+            className="bg-green-500 p-2 rounded-md text-white text-center"
           >
             Comprar créditos
           </a>
@@ -105,7 +111,7 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* SELECTORS */}
-      <section className="flex flex-wrap justify-center gap-10 md:gap-52 lg:flex-nowrap border-2 border-yellow-400 rounded-2xl p-4">
+      <form className="flex flex-wrap items-end justify-center gap-10 md:gap-52 lg:flex-nowrap border-2 border-yellow-400 rounded-2xl p-4">
         <div className="w-full">
           <h1 className="text-2xl font-bold text-center lg:text-left">
             Selecione a liga
@@ -144,6 +150,7 @@ const HomePage: React.FC = () => {
                     });
                     return;
                   }
+                  handleResetDispatchedGame();
                   field.onChange(value);
                 }}
                 nothingFoundMessage="O nome dos times deve ser igual a como aparece na bet."
@@ -153,11 +160,21 @@ const HomePage: React.FC = () => {
             )}
           />
         </div>
-      </section>
+        {selectedGame && (
+          <Button
+            onClick={handleSubmit(onSubmit)}
+            type="submit"
+            bg={"green"}
+            className="w-full bg-green-400 lg:justify-center"
+          >
+            Pesquisar
+          </Button>
+        )}
+      </form>
 
       {/* GAME INFO */}
       <DisplayGame
-        selectedGame={selectedGame}
+        selectedGame={dispatchedGame}
         accuracyLoadingProgress={accuracyLoadingProgress}
         setAccuracyLoadingProgress={setAccuracyLoadingProgress}
       />

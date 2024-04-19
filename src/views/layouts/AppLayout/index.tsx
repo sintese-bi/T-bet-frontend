@@ -1,18 +1,13 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { useSessionCheck } from "../../../hooks";
-import { useEffect } from "react";
 import { BROWSER_ROUTE } from "../../../constants";
 import { Button } from "@mantine/core";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { loggoutUser } from "../../../redux/user/actions";
-import { DefaultState } from "../../../redux/reducers";
 
 const AppLayout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const isUserAuthenticated = useSessionCheck();
-  const { user } = useSelector((state: DefaultState) => state.auth);
 
   const isHomePage = location.pathname === BROWSER_ROUTE.HOME;
 
@@ -26,7 +21,7 @@ const AppLayout = () => {
       <header className="flex justify-center py-4">
         <img className="w-24" src={"/logo-bet.png"} alt="Tbet logo" />
       </header>
-      <section className="flex-1 h-full">
+      <section className="flex-1">
         <Outlet />
       </section>
       <footer className="flex flex-col items-center gap-5 justify-center py-7">

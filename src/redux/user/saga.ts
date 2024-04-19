@@ -69,8 +69,12 @@ function* registerUserCall(action: RegisterUserCallProps): Generator {
     });
 
     navigate(BROWSER_ROUTE.LOGIN);
+
     yield put(registerUserSuccess(user));
-    Notify({ message: "Usuário criado com sucesso!", type: "success" });
+    Notify({
+      message: "Senha enviada para o seu e-mail, verifique sua caixa de spam",
+      type: "success",
+    });
   } catch (e) {
     const error = e as Error;
     console.error(error);
@@ -120,6 +124,7 @@ function* loginUserCall(action: LoginUserCallProps): Generator {
     navigate(BROWSER_ROUTE.HOME);
 
     localStorage.setItem("token@TBet", acesso);
+
     yield put(
       loginUserSuccess({
         user: { id: use_id, credits: use_quant, token: acesso, email },
@@ -152,26 +157,12 @@ function* loggoutUserCall(action: LoggoutUserCallProps): Generator {
   }
 }
 
-function* buyCreditsCall(): Generator {
-  try {
-    const user = yield call(userApi.post, API_ROUTE.BUY_CREDITS);
-    console.log(user);
-    yield put(buyCreditsSuccess());
-  } catch (e) {
-    const error = e as Error;
-    console.error(error.message);
-
-    yield put(buyCreditsError());
-  }
-}
-
 function* watchGetAuth() {
   yield takeEvery(GET_USER, getUserCall);
   yield takeEvery(LOGIN_USER, loginUserCall);
   yield takeEvery(UPDATE_USER, updateUserCall);
   yield takeEvery(REGISTER_USER, registerUserCall);
   yield takeEvery(LOGGOUT_USER, loggoutUserCall);
-  yield takeEvery(BUY_CREDITS, buyCreditsCall);
 }
 
 export default function* rootSaga() {
