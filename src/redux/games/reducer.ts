@@ -1,5 +1,7 @@
 import { Reducer } from "redux";
 import {
+  GetGameRateRequest,
+  GetGameRateSuccess,
   GetGameRequest,
   GetGameSuccess,
   GetIpAddressSuccess,
@@ -9,6 +11,9 @@ import {
 import {
   GET_GAME,
   GET_GAME_ERROR,
+  GET_GAME_RATE,
+  GET_GAME_RATE_ERROR,
+  GET_GAME_RATE_SUCCESS,
   GET_GAME_SUCCESS,
   GET_IP_ADDRESS,
   GET_IP_ADDRESS_ERROR,
@@ -24,6 +29,12 @@ type GameState = {
   game: GetGameSuccess;
   games: string[];
   gameStats: GetGameSuccess;
+  gameRate: {
+    loss: number;
+    rateWin: number;
+    win: number;
+  };
+  isGameRateLoading: boolean;
   isIpAddressLoading: boolean;
   isLoadingGameStats: boolean;
   isLoadingLeagueGames: boolean;
@@ -38,7 +49,9 @@ type GameAction = {
     | GetLeagueGameSuccess
     | GetGameRequest
     | GetGameSuccess
-    | GetIpAddressSuccess;
+    | GetIpAddressSuccess
+    | GetGameRateRequest
+    | GetGameRateSuccess;
 };
 
 const initialState: GameState = {
@@ -55,6 +68,12 @@ const initialState: GameState = {
     prob: 0,
     tableData: [],
   },
+  gameRate: {
+    loss: Math.min(),
+    rateWin: Math.min(),
+    win: Math.min(),
+  },
+  isGameRateLoading: false,
   isIpAddressLoading: false,
   isLoadingGameStats: false,
   isLoadingLeagueGames: false,
@@ -67,34 +86,12 @@ const AuthReducer: Reducer<GameState, GameAction> = (
   action
 ) => {
   switch (action.type) {
-    case GET_IP_ADDRESS: {
-      return {
-        ...state,
-        isIpAddressLoading: true,
-      };
-    }
-
     case GET_IP_ADDRESS_SUCCESS: {
       const payload = action.payload as GetIpAddressSuccess;
       return {
         ...state,
         isIpAddressLoading: false,
         user: payload.ip,
-      };
-    }
-
-    case GET_IP_ADDRESS_ERROR: {
-      return {
-        ...state,
-        isIpAddressLoading: false,
-        error: action.payload,
-      };
-    }
-
-    case GET_LEAGUE_GAME: {
-      return {
-        ...state,
-        isLoadingLeagueGames: true,
       };
     }
 
@@ -107,11 +104,35 @@ const AuthReducer: Reducer<GameState, GameAction> = (
       };
     }
 
-    case GET_LEAGUE_GAME_ERROR: {
+    case GET_GAME_SUCCESS: {
+      const payload = action.payload as GetGameSuccess;
       return {
         ...state,
-        isLoadingLeagueGames: false,
-        error: action.payload,
+        game: { ...payload },
+        isLoadingGames: false,
+      };
+    }
+
+    case GET_GAME_RATE_SUCCESS: {
+      const payload = action.payload as GetGameRateSuccess;
+      return {
+        ...state,
+        gameRate: { ...payload },
+        isGameRateLoading: false,
+      };
+    }
+
+    case GET_GAME_RATE: {
+      return {
+        ...state,
+        isGameRateLoading: true,
+      };
+    }
+
+    case GET_LEAGUE_GAME: {
+      return {
+        ...state,
+        isLoadingLeagueGames: true,
       };
     }
 
@@ -122,12 +143,33 @@ const AuthReducer: Reducer<GameState, GameAction> = (
       };
     }
 
-    case GET_GAME_SUCCESS: {
-      const payload = action.payload as GetGameSuccess;
+    case GET_IP_ADDRESS: {
       return {
         ...state,
-        game: { ...payload },
-        isLoadingGames: false,
+        isIpAddressLoading: true,
+      };
+    }
+
+    case GET_LEAGUE_GAME: {
+      return {
+        ...state,
+        isLoadingLeagueGames: true,
+      };
+    }
+
+    case GET_GAME_RATE_ERROR: {
+      return {
+        ...state,
+        isGameRateLoading: false,
+        error: action.payload,
+      };
+    }
+
+    case GET_LEAGUE_GAME_ERROR: {
+      return {
+        ...state,
+        isLoadingLeagueGames: false,
+        error: action.payload,
       };
     }
 
@@ -135,6 +177,14 @@ const AuthReducer: Reducer<GameState, GameAction> = (
       return {
         ...state,
         isLoadingGames: false,
+        error: action.payload,
+      };
+    }
+
+    case GET_IP_ADDRESS_ERROR: {
+      return {
+        ...state,
+        isIpAddressLoading: false,
         error: action.payload,
       };
     }

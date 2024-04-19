@@ -10,6 +10,11 @@ export const GET_GAME = "GET_GAME";
 export const GET_GAME_SUCCESS = "GET_GAME_SUCCESS";
 export const GET_GAME_ERROR = "GET_GAME_ERROR";
 
+export const GET_GAME_RATE = "GET_GAME_RATE";
+export const GET_GAME_RATE_SUCCESS = "GET_GAME_RATE_SUCCESS";
+export const GET_GAME_RATE_ERROR = "GET_GAME_RATE_ERROR";
+
+//? User
 export const GET_USER = "GET_USER";
 export const GET_USER_SUCCESS = "GET_USER_SUCCESS";
 export const GET_USER_ERROR = "GET_USER_ERROR";

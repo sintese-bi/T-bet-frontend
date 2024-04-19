@@ -1,6 +1,9 @@
 import {
   GET_GAME,
   GET_GAME_ERROR,
+  GET_GAME_RATE,
+  GET_GAME_RATE_ERROR,
+  GET_GAME_RATE_SUCCESS,
   GET_GAME_SUCCESS,
   GET_IP_ADDRESS,
   GET_IP_ADDRESS_ERROR,
@@ -16,6 +19,8 @@ import {
   GetLeagueGameSuccess,
   GetGameSuccess,
   GetIpAddressRequest,
+  GetGameRateRequest,
+  GetGameRateSuccess,
 } from "./types";
 
 export const getIpAddress = () => ({
@@ -61,5 +66,20 @@ export const getGameSuccess = (payload: GetGameSuccess) => ({
 
 export const getGameError = (payload: unknown) => ({
   type: GET_GAME_ERROR,
+  payload,
+});
+
+export const getGameRate = (payload: GetGameRateRequest) => ({
+  type: GET_GAME_RATE,
+  payload,
+});
+
+export const getGameRateSuccess = (payload: GetGameRateSuccess) => ({
+  type: GET_GAME_RATE_SUCCESS,
+  payload,
+});
+
+export const getGameRateError = (payload: unknown) => ({
+  type: GET_GAME_RATE_ERROR,
   payload,
 });

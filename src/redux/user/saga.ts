@@ -37,8 +37,11 @@ type GetUserCallProps = {
 };
 
 function* getUserCall(action: GetUserCallProps): Generator {
+  const email = localStorage.getItem("email@TBet");
   try {
-    const user = yield call(userApi.post, API_ROUTE.GET_USER, action.payload);
+    const user = yield call(userApi.post, API_ROUTE.GET_USER, {
+      use_email: email,
+    });
     const {
       data: {
         message: { use_email, use_quant },
@@ -124,6 +127,7 @@ function* loginUserCall(action: LoginUserCallProps): Generator {
     navigate(BROWSER_ROUTE.HOME);
 
     localStorage.setItem("token@TBet", acesso);
+    localStorage.setItem("email@TBet", email);
 
     yield put(
       loginUserSuccess({
@@ -148,6 +152,7 @@ function* loggoutUserCall(action: LoggoutUserCallProps): Generator {
 
   try {
     localStorage.removeItem("token@TBet");
+    localStorage.removeItem("email@TBet");
 
     navigate(BROWSER_ROUTE.LOGIN);
     Notify({ message: "Desconectado com sucesso!", type: "success" });

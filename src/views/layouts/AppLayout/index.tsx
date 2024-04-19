@@ -37,7 +37,7 @@ const AppLayout = () => {
         <Button
           bg={"green"}
           onClick={redirectToWhatsapp}
-          className="bg-green-400 w-full rounded-md p-3"
+          className="bg-green-400 w-full rounded-md p-3 max-w-lg"
         >
           Whatsaap
         </Button>

@@ -22,3 +22,14 @@ export type GetGameSuccess = {
   prob: number;
   tableData: any[];
 };
+
+export type GetGameRateRequest = {
+  liga: string;
+  game: string;
+};
+
+export type GetGameRateSuccess = {
+  loss: number;
+  rateWin: number;
+  win: number;
+};

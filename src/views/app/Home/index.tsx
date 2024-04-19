@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Button, Select } from "@mantine/core";
+import { Button, Select, Table, Text } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
-import { useForm, Controller } from "react-hook-form";
-import { getGame, getLeagueGame } from "../../../redux/actions";
+import { useForm, Controller, set } from "react-hook-form";
+import { getGame, getGameRate, getLeagueGame } from "../../../redux/actions";
 import { DefaultState } from "../../../redux/reducers";
 import { BROWSER_ROUTE, LEAGUE } from "../../../constants";
 import { Notify } from "../../../utils";
@@ -14,6 +14,7 @@ import DisplayGame from "./components/DisplayGame";
 import { RingLoader } from "react-spinners";
 import { useSessionCheck } from "../../../hooks";
 import { useNavigate } from "react-router-dom";
+import { formatGameRateStats } from "../../../helpers";
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ const HomePage: React.FC = () => {
   const { user, isUserLoading } = useSelector(
     (state: DefaultState) => state.auth
   );
-  const { games, isLoadingGames } = useSelector(
+  const { games, isLoadingGames, isGameRateLoading, gameRate } = useSelector(
     (state: DefaultState) => state.games
   );
   const { control, watch, handleSubmit } = useForm({
@@ -32,6 +33,7 @@ const HomePage: React.FC = () => {
   });
 
   const [accuracyLoadingProgress, setAccuracyLoadingProgress] = useState(0);
+  const [showGameRate, setShowGameRate] = useState(false);
   const [dispatchedGame, setDispatchedGame] = useState("");
   const customWindow = useGetWindow();
 
@@ -40,6 +42,7 @@ const HomePage: React.FC = () => {
 
   const handleHasReachedLimit = () => user.credits === 0;
   const handleResetDispatchedGame = () => setDispatchedGame("");
+  const handleResetShowGameRate = () => setShowGameRate(false);
   const onSubmit = () => {
     if (handleHasReachedLimit()) {
       Notify({
@@ -50,8 +53,10 @@ const HomePage: React.FC = () => {
     }
     dispatch(getGame({ leagueId: selectedLeague, game: selectedGame }));
     setAccuracyLoadingProgress(0);
-    dispatch(updateUser({ email: user.email, credits: user.credits - 1 }));
     setDispatchedGame(selectedGame);
+    setShowGameRate(true);
+    dispatch(getGameRate({ game: selectedGame, liga: selectedLeague }));
+    dispatch(updateUser({ email: user.email, credits: user.credits - 1 }));
   };
 
   // SELECT LEAGUE EFFECT
@@ -68,7 +73,6 @@ const HomePage: React.FC = () => {
   const isUserAuthenticated = useSessionCheck();
 
   useEffect(() => {
-    console.log(!isUserAuthenticated);
     if (!isUserAuthenticated) {
       navigate(BROWSER_ROUTE.LOGIN);
       return;
@@ -150,6 +154,7 @@ const HomePage: React.FC = () => {
                     });
                     return;
                   }
+                  handleResetShowGameRate();
                   handleResetDispatchedGame();
                   field.onChange(value);
                 }}
@@ -178,6 +183,46 @@ const HomePage: React.FC = () => {
         accuracyLoadingProgress={accuracyLoadingProgress}
         setAccuracyLoadingProgress={setAccuracyLoadingProgress}
       />
+
+      {gameRate.loss !== Math.min() && showGameRate && (
+        <>
+          {isGameRateLoading ? (
+            <section className="flex justify-center items-center h-full">
+              <RingLoader color="#ffbf69" />
+            </section>
+          ) : (
+            <section className="border-2 border-yellow-400 rounded-2xl p-4">
+              <h1 className="text-2xl font-bold text-center">
+                Assertividade do sistema
+              </h1>
+              <Table>
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th>Jogo</Table.Th>
+                    <Table.Th>Vitoria</Table.Th>
+                    <Table.Th>Derrota</Table.Th>
+                    <Table.Th>Desempenho</Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                  <Table.Tr key={gameRate.rateWin}>
+                    <Table.Td>{selectedGame}</Table.Td>
+                    <Table.Td align="center" className="text-green-400">
+                      {gameRate.win}
+                    </Table.Td>
+                    <Table.Td align="center" className="text-red-500">
+                      {gameRate.loss}
+                    </Table.Td>
+                    <Table.Td align="center" className="text-blue-500">
+                      {formatGameRateStats(gameRate.rateWin)}
+                    </Table.Td>
+                  </Table.Tr>
+                </Table.Tbody>
+              </Table>
+            </section>
+          )}
+        </>
+      )}
     </form>
   );
 };
