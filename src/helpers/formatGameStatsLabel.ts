@@ -10,6 +10,8 @@ export function formatGameStatsLabel(gameStats: string): string {
       return "MENOS DE 2.5";
     case "vis":
       return "VISITANTE";
+    case "ambasMarcam":
+      return "AMBAS MARCAM";
     default:
       return "";
   }
