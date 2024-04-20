@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Button, Select, Table, Text } from "@mantine/core";
+import { Button, Select, Table } from "@mantine/core";
 import { useDispatch, useSelector } from "react-redux";
-import { useForm, Controller, set } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { getGame, getGameRate, getLeagueGame } from "../../../redux/actions";
 import { DefaultState } from "../../../redux/reducers";
 import { BROWSER_ROUTE, LEAGUE } from "../../../constants";
@@ -33,7 +33,6 @@ const HomePage: React.FC = () => {
   });
 
   const [accuracyLoadingProgress, setAccuracyLoadingProgress] = useState(0);
-  const [showGameRate, setShowGameRate] = useState(false);
   const [dispatchedGame, setDispatchedGame] = useState("");
   const customWindow = useGetWindow();
 
@@ -42,7 +41,6 @@ const HomePage: React.FC = () => {
 
   const handleHasReachedLimit = () => user.credits === 0;
   const handleResetDispatchedGame = () => setDispatchedGame("");
-  const handleResetShowGameRate = () => setShowGameRate(false);
   const onSubmit = () => {
     if (handleHasReachedLimit()) {
       Notify({
@@ -54,8 +52,6 @@ const HomePage: React.FC = () => {
     dispatch(getGame({ leagueId: selectedLeague, game: selectedGame }));
     setAccuracyLoadingProgress(0);
     setDispatchedGame(selectedGame);
-    setShowGameRate(true);
-    dispatch(getGameRate({ game: selectedGame, liga: selectedLeague }));
     dispatch(updateUser({ email: user.email, credits: user.credits - 1 }));
   };
 
@@ -63,6 +59,11 @@ const HomePage: React.FC = () => {
   useEffect(() => {
     dispatch(getLeagueGame({ leagueId: selectedLeague }));
   }, [dispatch, selectedLeague]);
+
+  useEffect(() => {
+    if (!selectedGame) return;
+    dispatch(getGameRate({ game: selectedGame, liga: selectedLeague }));
+  }, [selectedGame, selectedLeague, dispatch]);
 
   // GET USER EFFECT
   useEffect(() => {
@@ -127,7 +128,6 @@ const HomePage: React.FC = () => {
               <Select
                 {...field}
                 placeholder="Selecionar liga"
-                // data={Object.values(LEAGUE).map((league) => league)}
                 data={[LEAGUE.EURO]}
                 onChange={(value) => field.onChange(value)}
               />
@@ -154,7 +154,6 @@ const HomePage: React.FC = () => {
                     });
                     return;
                   }
-                  handleResetShowGameRate();
                   handleResetDispatchedGame();
                   field.onChange(value);
                 }}
@@ -184,7 +183,7 @@ const HomePage: React.FC = () => {
         setAccuracyLoadingProgress={setAccuracyLoadingProgress}
       />
 
-      {gameRate.loss !== Math.min() && showGameRate && (
+      {gameRate.loss !== Math.min() && (
         <>
           {isGameRateLoading ? (
             <section className="flex justify-center items-center h-full">
@@ -199,9 +198,9 @@ const HomePage: React.FC = () => {
                 <Table.Thead>
                   <Table.Tr>
                     <Table.Th>Jogo</Table.Th>
-                    <Table.Th>Vitoria</Table.Th>
-                    <Table.Th>Derrota</Table.Th>
-                    <Table.Th>Desempenho</Table.Th>
+                    <Table.Th className="text-center">Vitoria</Table.Th>
+                    <Table.Th className="text-center">Derrota</Table.Th>
+                    <Table.Th className="text-center">Desempenho</Table.Th>
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
