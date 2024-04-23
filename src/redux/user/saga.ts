@@ -1,29 +1,32 @@
-import { all, call, fork, put, takeEvery } from "redux-saga/effects";
+import { all, call, fork, put, take, takeEvery } from "redux-saga/effects";
 import {
   GetUserRequest,
-  GetUserSuccess,
   LoggoutUserRequest,
   LoginUserRequest,
   RegisterUserRequest,
+  ResetPassword,
+  ResetPasswordLink,
   UpdateUserRequest,
-  User,
 } from "./types";
 import {
-  BUY_CREDITS,
   GET_USER,
   LOGGOUT_USER,
   LOGIN_USER,
   REGISTER_USER,
+  RESET_PASSWORD,
+  RESET_PASSWORD_LINK,
   UPDATE_USER,
 } from "../actions";
 import {
-  buyCreditsError,
-  buyCreditsSuccess,
   getUserError,
   getUserSuccess,
   loginUserSuccess,
   registerUserError,
   registerUserSuccess,
+  resetPasswordError,
+  resetPasswordLinkError,
+  resetPasswordLinkSuccess,
+  resetPasswordSuccess,
   updateUserError,
   updateUserSuccess,
 } from "./actions";
@@ -162,12 +165,66 @@ function* loggoutUserCall(action: LoggoutUserCallProps): Generator {
   }
 }
 
+type ResetPasswordLinkCallProps = {
+  type: string;
+  payload: ResetPasswordLink;
+};
+
+function* resetPasswordLinkCall(action: ResetPasswordLinkCallProps): Generator {
+  try {
+    yield call(userApi.post, API_ROUTE.RESET_PASSWORD_LINK, {
+      use_email: action.payload.email,
+    });
+
+    yield put(resetPasswordLinkSuccess());
+    Notify({
+      message: "Link enviado para o seu e-mail, verifique a caixa de SPAM",
+      type: "success",
+    });
+  } catch (e) {
+    const error = e as Error;
+    console.error(error);
+    yield put(resetPasswordLinkError());
+  }
+}
+
+type ResetPasswordCallProps = {
+  type: string;
+  payload: ResetPassword;
+};
+
+function* resetPasswordCall(action: ResetPasswordCallProps): Generator {
+  const { email, token, password, navigate } = action.payload;
+
+  try {
+    yield call(
+      userApi.post,
+      API_ROUTE.RESET_PASSWORD.replace("{{token}}", token).replace(
+        "{{email}}",
+        email
+      ),
+      {
+        use_password: password,
+      }
+    );
+    navigate(BROWSER_ROUTE.LOGIN);
+    Notify({ message: "Senha alterada com sucesso!", type: "success" });
+    yield put(resetPasswordSuccess());
+  } catch (e) {
+    const error = e as Error;
+    console.error(error);
+    yield put(resetPasswordError());
+  }
+}
+
 function* watchGetAuth() {
   yield takeEvery(GET_USER, getUserCall);
   yield takeEvery(LOGIN_USER, loginUserCall);
   yield takeEvery(UPDATE_USER, updateUserCall);
   yield takeEvery(REGISTER_USER, registerUserCall);
   yield takeEvery(LOGGOUT_USER, loggoutUserCall);
+  yield takeEvery(RESET_PASSWORD_LINK, resetPasswordLinkCall);
+  yield takeEvery(RESET_PASSWORD, resetPasswordCall);
 }
 
 export default function* rootSaga() {

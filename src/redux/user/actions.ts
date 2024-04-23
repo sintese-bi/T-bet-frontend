@@ -14,6 +14,11 @@ import {
   REGISTER_USER,
   REGISTER_USER_ERROR,
   REGISTER_USER_SUCCESS,
+  RESET_PASSWORD,
+  RESET_PASSWORD_ERROR,
+  RESET_PASSWORD_LINK,
+  RESET_PASSWORD_LINK_SUCCESS,
+  RESET_PASSWORD_SUCCESS,
   UPDATE_USER,
   UPDATE_USER_ERROR,
   UPDATE_USER_SUCCESS,
@@ -25,6 +30,8 @@ import {
   LoginUserRequest,
   LoginUserSuccess,
   RegisterUserRequest,
+  ResetPassword,
+  ResetPasswordLink,
   UpdateUserRequest,
 } from "./types";
 
@@ -113,4 +120,30 @@ export const buyCreditsSuccess = () => ({
 
 export const buyCreditsError = () => ({
   type: BUY_CREDITS_ERROR,
+});
+
+export const resetPasswordLink = (payload: ResetPasswordLink) => ({
+  type: RESET_PASSWORD_LINK,
+  payload,
+});
+
+export const resetPasswordLinkSuccess = () => ({
+  type: RESET_PASSWORD_LINK_SUCCESS,
+});
+
+export const resetPassword = (payload: ResetPassword) => ({
+  type: RESET_PASSWORD,
+  payload,
+});
+
+export const resetPasswordLinkError = () => ({
+  type: RESET_PASSWORD_ERROR,
+});
+
+export const resetPasswordSuccess = () => ({
+  type: RESET_PASSWORD_SUCCESS,
+});
+
+export const resetPasswordError = () => ({
+  type: RESET_PASSWORD_ERROR,
 });

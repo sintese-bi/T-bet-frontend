@@ -25,6 +25,12 @@ import {
   REGISTER_USER,
   REGISTER_USER_ERROR,
   REGISTER_USER_SUCCESS,
+  RESET_PASSWORD,
+  RESET_PASSWORD_ERROR,
+  RESET_PASSWORD_LINK,
+  RESET_PASSWORD_LINK_ERROR,
+  RESET_PASSWORD_LINK_SUCCESS,
+  RESET_PASSWORD_SUCCESS,
   UPDATE_USER,
   UPDATE_USER_ERROR,
   UPDATE_USER_SUCCESS,
@@ -106,6 +112,20 @@ const UserReducer: Reducer<UserState, UserAction> = (
       };
     }
 
+    case RESET_PASSWORD_LINK_SUCCESS: {
+      return {
+        ...state,
+        isUserLoading: false,
+      };
+    }
+
+    case RESET_PASSWORD_SUCCESS: {
+      return {
+        ...state,
+        isUserLoading: false,
+      };
+    }
+
     case BUY_CREDITS_SUCCESS: {
       return {
         ...state,
@@ -152,6 +172,22 @@ const UserReducer: Reducer<UserState, UserAction> = (
       };
     }
 
+    case RESET_PASSWORD: {
+      return {
+        ...state,
+        isUserLoading: true,
+      };
+    }
+
+    case RESET_PASSWORD_LINK: {
+      return {
+        ...state,
+        isUserLoading: true,
+      };
+    }
+
+    case RESET_PASSWORD_ERROR:
+    case RESET_PASSWORD_LINK_ERROR:
     case BUY_CREDITS_ERROR:
     case LOGGOUT_USER_ERROR:
     case GET_USER_ERROR:

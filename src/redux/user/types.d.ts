@@ -1,3 +1,4 @@
+import { Navigate } from "react-router-dom";
 import { BrowserKeys } from "../../constants";
 import { RedirectProps } from "../../utils/route";
 
@@ -32,3 +33,13 @@ export type LoginUserSuccess = {
 export type UpdateUserRequest = Omit<User, "id" | "token">;
 
 export type LoggoutUserRequest = RedirectProps;
+
+export type ResetPasswordLink = {
+  email: string;
+};
+
+export type ResetPassword = RedirectProps & {
+  email: string;
+  token: string;
+  password: string;
+};

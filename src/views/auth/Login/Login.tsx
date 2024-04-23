@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../../redux/user/actions";
+import { useState } from "react";
+import ResetPasswordLink from "./components/ResetPasswordLink";
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -18,6 +20,11 @@ const LoginPage: React.FC = () => {
       password: "",
     },
   });
+
+  const [forgotPasswordModal, setForgotPasswordModal] = useState(false);
+
+  const handleCloseForgotPasswordModal = () => setForgotPasswordModal(false);
+  const handleOpenForgotPasswordModal = () => setForgotPasswordModal(true);
 
   const onSubmit = (data: any) => {
     dispatch(
@@ -67,7 +74,18 @@ const LoginPage: React.FC = () => {
             Cadastrar
           </a>
         </p>
+
+        <Text
+          onClick={handleOpenForgotPasswordModal}
+          className="text-green-400 hover:cursor-pointer"
+        >
+          Esqueceu a senha?
+        </Text>
       </section>
+      <ResetPasswordLink
+        onClose={handleCloseForgotPasswordModal}
+        open={forgotPasswordModal}
+      />
     </main>
   );
 };

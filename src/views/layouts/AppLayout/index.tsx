@@ -3,6 +3,8 @@ import { BROWSER_ROUTE } from "../../../constants";
 import { Button } from "@mantine/core";
 import { useDispatch } from "react-redux";
 import { loggoutUser } from "../../../redux/user/actions";
+import { useEffect } from "react";
+import { useSessionCheck } from "../../../hooks";
 
 const AppLayout = () => {
   const dispatch = useDispatch();
@@ -15,6 +17,13 @@ const AppLayout = () => {
     window.open("https://api.whatsapp.com/send?phone=553192932316");
   };
   const handleLoggout = () => dispatch(loggoutUser({ navigate }));
+
+  const isTokenValid = useSessionCheck();
+  useEffect(() => {
+    if (!isTokenValid) {
+      navigate(BROWSER_ROUTE.HOME);
+    }
+  }, [isTokenValid, navigate]);
 
   return (
     <main className="flex flex-col px-4 lg:px-12 bg-black text-white h-full">

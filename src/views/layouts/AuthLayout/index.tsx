@@ -1,10 +1,30 @@
 import { Outlet } from "react-router-dom";
+import { Button } from "../../../components";
 
 const AuthLayout = () => {
+  const redirectToWhatsapp = () => {
+    window.open("https://api.whatsapp.com/send?phone=553192932316");
+  };
+
   return (
-    <div className="flex flex-col box-border bg-black text-white">
-      <Outlet />
-    </div>
+    <main className="flex flex-col px-4 lg:px-12 bg-black text-white h-full">
+      <header className="flex justify-center py-4">
+        <img className="w-24" src={"/logo-bet.png"} alt="Tbet logo" />
+      </header>
+      <section className="flex-1">
+        <Outlet />
+      </section>
+      <footer className="flex flex-col items-center gap-5 justify-center py-7">
+        <Button
+          bg={"green"}
+          onClick={redirectToWhatsapp}
+          className="bg-green-400 w-full rounded-md p-3 max-w-lg text-white"
+        >
+          Whatsaap
+        </Button>
+        Copyright © 2024 T-bet
+      </footer>
+    </main>
   );
 };
 
