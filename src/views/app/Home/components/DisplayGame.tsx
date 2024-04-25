@@ -1,6 +1,6 @@
 import { RingLoader } from "react-spinners";
 import {
-  formatGameStatsLabel,
+  formatMercadoLabel,
   formatGameStatsPorcentage,
 } from "../../../../helpers";
 import { Text } from "@mantine/core";
@@ -108,7 +108,7 @@ const DisplayGame = ({
                 <div className="flex flex-col items-center">
                   <Text className="text-2xl">Mercado</Text>
                   <Text className="text-green-400">
-                    <b>{formatGameStatsLabel(game.bet)}</b>
+                    <b>{formatMercadoLabel(game.bet)}</b>
                   </Text>
                 </div>
 

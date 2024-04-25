@@ -1,4 +1,4 @@
-export function formatGameStatsLabel(gameStats: string): string {
+export function formatMercadoLabel(gameStats: string): string {
   switch (gameStats) {
     case "home":
       return "CASA";

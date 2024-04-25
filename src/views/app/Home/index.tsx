@@ -14,7 +14,7 @@ import DisplayGame from "./components/DisplayGame";
 import { RingLoader } from "react-spinners";
 import { useSessionCheck } from "../../../hooks";
 import { useNavigate } from "react-router-dom";
-import { formatGameRateStats } from "../../../helpers";
+import { formatMercadoLabel } from "../../../helpers";
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -22,9 +22,8 @@ const HomePage: React.FC = () => {
   const { user, isUserLoading } = useSelector(
     (state: DefaultState) => state.auth
   );
-  const { games, isLoadingGames, isGameRateLoading, gameRate } = useSelector(
-    (state: DefaultState) => state.games
-  );
+  const { games, isLoadingGames, isGameRateLoading, gameRate, game } =
+    useSelector((state: DefaultState) => state.games);
   const { control, watch, handleSubmit } = useForm({
     defaultValues: {
       league: LEAGUE.EURO,
@@ -35,6 +34,7 @@ const HomePage: React.FC = () => {
   const [accuracyLoadingProgress, setAccuracyLoadingProgress] = useState(0);
   const [dispatchedGame, setDispatchedGame] = useState("");
   const customWindow = useGetWindow();
+  const isUserAuthenticated = useSessionCheck();
 
   const selectedLeague = watch("league");
   const selectedGame = watch("game");
@@ -61,17 +61,15 @@ const HomePage: React.FC = () => {
   }, [dispatch, selectedLeague]);
 
   useEffect(() => {
-    if (!selectedGame) return;
-    dispatch(getGameRate({ game: selectedGame, liga: selectedLeague }));
-  }, [selectedGame, selectedLeague, dispatch]);
+    if (!selectedLeague) return;
+    dispatch(getGameRate({ liga: selectedLeague }));
+  }, [selectedLeague, dispatch]);
 
   // GET USER EFFECT
   useEffect(() => {
     if (isUserLoading) return;
     dispatch(getUser({ email: user.email }));
   }, [dispatch]);
-
-  const isUserAuthenticated = useSessionCheck();
 
   useEffect(() => {
     if (!isUserAuthenticated) {
@@ -183,45 +181,35 @@ const HomePage: React.FC = () => {
         setAccuracyLoadingProgress={setAccuracyLoadingProgress}
       />
 
-      {gameRate.loss !== Math.min() && (
-        <>
-          {isGameRateLoading ? (
-            <section className="flex justify-center items-center h-full">
-              <RingLoader color="#ffbf69" />
-            </section>
-          ) : (
-            <section className="border-2 border-yellow-400 rounded-2xl p-4">
-              <h1 className="text-2xl font-bold text-center">
-                Assertividade do sistema
-              </h1>
-              <Table>
-                <Table.Thead>
-                  <Table.Tr>
-                    <Table.Th>Jogo</Table.Th>
-                    <Table.Th className="text-center">Vitoria</Table.Th>
-                    <Table.Th className="text-center">Derrota</Table.Th>
-                    <Table.Th className="text-center">Desempenho</Table.Th>
-                  </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>
-                  <Table.Tr key={gameRate.rateWin}>
-                    <Table.Td>{selectedGame}</Table.Td>
-                    <Table.Td align="center" className="text-green-400">
-                      {gameRate.win}
-                    </Table.Td>
-                    <Table.Td align="center" className="text-red-500">
-                      {gameRate.loss}
-                    </Table.Td>
-                    <Table.Td align="center" className="text-blue-500">
-                      {formatGameRateStats(gameRate.rateWin)}
-                    </Table.Td>
-                  </Table.Tr>
-                </Table.Tbody>
-              </Table>
-            </section>
-          )}
-        </>
-      )}
+      {/* TABLE STATS */}
+      {(isGameRateLoading && game.bet === "home") ||
+        (game.bet === "over25" && (
+          <section className="border-2 border-yellow-400 rounded-2xl p-4">
+            <h1 className="text-xl font-bold text-center">
+              Assertividade do sistema
+            </h1>
+            <Table>
+              <Table.Thead>
+                <Table.Tr>
+                  <Table.Th>Mercado</Table.Th>
+                  <Table.Th className="text-center">Vitorias</Table.Th>
+                  <Table.Th className="text-center">Derrotas</Table.Th>
+                </Table.Tr>
+              </Table.Thead>
+              <Table.Tbody>
+                <Table.Tr>
+                  <Table.Td>{formatMercadoLabel(game.bet)}</Table.Td>
+                  <Table.Td align="center" className="text-green-400">
+                    {gameRate[game.bet].win}
+                  </Table.Td>
+                  <Table.Td align="center" className="text-red-500">
+                    {gameRate[game.bet].loss}
+                  </Table.Td>
+                </Table.Tr>
+              </Table.Tbody>
+            </Table>
+          </section>
+        ))}
     </form>
   );
 };

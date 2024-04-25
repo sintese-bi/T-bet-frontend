@@ -5,7 +5,6 @@ import {
   put,
   takeEvery,
   takeLatest,
-  takeLeading,
 } from "redux-saga/effects";
 import {
   GET_GAME,
@@ -99,16 +98,29 @@ type GetGameRateProps = {
 };
 
 function* fetchGameRate({ payload }: GetGameRateProps): Generator {
-  const { liga, game } = payload;
+  const { liga } = payload;
 
   try {
     const response = yield call(api.post, API_ROUTE.GET_GAME_RATE, {
       liga,
-      game,
     });
-    const { data } = response as { data: GetGameRateSuccess };
+    const { data } = response as {
+      data: {
+        home_list: { loss: number; win: number };
+        over_list: { loss: number; win: number };
+      };
+    };
 
-    yield put(getGameRateSuccess({ ...data }));
+    yield put(
+      getGameRateSuccess({
+        home: data.home_list,
+        over25: data.over_list,
+        over35: data.over_list,
+        under25: data.over_list,
+        vis: data.home_list,
+        ambasMarcam: data.home_list,
+      })
+    );
   } catch (error) {
     console.error(error);
     yield put(getGameRateError({ error }));

@@ -29,11 +29,7 @@ type GameState = {
   game: GetGameSuccess;
   games: string[];
   gameStats: GetGameSuccess;
-  gameRate: {
-    loss: number;
-    rateWin: number;
-    win: number;
-  };
+  gameRate: GetGameRateSuccess;
   isGameRateLoading: boolean;
   isIpAddressLoading: boolean;
   isLoadingGameStats: boolean;
@@ -69,9 +65,30 @@ const initialState: GameState = {
     tableData: [],
   },
   gameRate: {
-    loss: Math.min(),
-    rateWin: Math.min(),
-    win: Math.min(),
+    home: {
+      loss: Math.min(),
+      win: Math.min(),
+    },
+    over25: {
+      loss: Math.min(),
+      win: Math.min(),
+    },
+    under25: {
+      loss: Math.min(),
+      win: Math.min(),
+    },
+    over35: {
+      loss: Math.min(),
+      win: Math.min(),
+    },
+    vis: {
+      loss: Math.min(),
+      win: Math.min(),
+    },
+    ambasMarcam: {
+      loss: Math.min(),
+      win: Math.min(),
+    },
   },
   isGameRateLoading: false,
   isIpAddressLoading: false,

@@ -1,3 +1,3 @@
-export * from "./formatGameStatsLabel";
+export * from "./formatMercadoLabel";
 export * from "./formatGameStatsPorcentage";
 export * from "./findHighestGameStat";
