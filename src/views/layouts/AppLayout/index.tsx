@@ -21,7 +21,7 @@ const AppLayout = () => {
   const isTokenValid = useSessionCheck();
   useEffect(() => {
     if (!isTokenValid) {
-      navigate(BROWSER_ROUTE.HOME);
+      navigate(BROWSER_ROUTE.LOGIN);
     }
   }, [isTokenValid, navigate]);
 

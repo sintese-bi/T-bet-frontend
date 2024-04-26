@@ -98,16 +98,17 @@ type GetGameRateProps = {
 };
 
 function* fetchGameRate({ payload }: GetGameRateProps): Generator {
-  const { liga } = payload;
+  const { liga, game } = payload;
 
   try {
     const response = yield call(api.post, API_ROUTE.GET_GAME_RATE, {
       liga,
+      game,
     });
     const { data } = response as {
       data: {
-        home_list: { loss: number; win: number };
-        over_list: { loss: number; win: number };
+        home_list: { loss: number; win: number; rate: number };
+        over_list: { loss: number; win: number; rate: number };
       };
     };
 

@@ -25,31 +25,38 @@ export type GetGameSuccess = {
 
 export type GetGameRateRequest = {
   liga: string;
+  game: string;
 };
 
 export type GetGameRateSuccess = {
   home: {
     win: number;
     loss: number;
+    rate: number;
   };
   over25: {
     win: number;
     loss: number;
+    rate: number;
   };
   under25: {
     win: number;
     loss: number;
+    rate: number;
   };
   over35: {
     win: number;
     loss: number;
+    rate: number;
   };
   vis: {
     win: number;
     loss: number;
+    rate: number;
   };
   ambasMarcam: {
     win: number;
     loss: number;
+    rate: number;
   };
 };

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm, Controller } from "react-hook-form";
 import { getGame, getGameRate, getLeagueGame } from "../../../redux/actions";
 import { DefaultState } from "../../../redux/reducers";
-import { BROWSER_ROUTE, LEAGUE } from "../../../constants";
+import { LEAGUE } from "../../../constants";
 import { Notify } from "../../../utils";
 
 import Confetti from "react-confetti";
@@ -12,18 +12,16 @@ import { useGetWindow } from "../../../hooks/useGetWindow";
 import { getUser, updateUser } from "../../../redux/user/actions";
 import DisplayGame from "./components/DisplayGame";
 import { RingLoader } from "react-spinners";
-import { useSessionCheck } from "../../../hooks";
-import { useNavigate } from "react-router-dom";
-import { formatMercadoLabel } from "../../../helpers";
+import { formatGameRateStats, formatMercadoLabel } from "../../../helpers";
 
 const HomePage: React.FC = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user, isUserLoading } = useSelector(
     (state: DefaultState) => state.auth
   );
   const { games, isLoadingGames, isGameRateLoading, gameRate, game } =
     useSelector((state: DefaultState) => state.games);
+
   const { control, watch, handleSubmit } = useForm({
     defaultValues: {
       league: LEAGUE.EURO,
@@ -34,10 +32,11 @@ const HomePage: React.FC = () => {
   const [accuracyLoadingProgress, setAccuracyLoadingProgress] = useState(0);
   const [dispatchedGame, setDispatchedGame] = useState("");
   const customWindow = useGetWindow();
-  const isUserAuthenticated = useSessionCheck();
 
   const selectedLeague = watch("league");
   const selectedGame = watch("game");
+  const isLoadingGameRate = isGameRateLoading || isLoadingGames;
+  const canShowGameRate = game.bet === "home" || game.bet === "over25";
 
   const handleHasReachedLimit = () => user.credits === 0;
   const handleResetDispatchedGame = () => setDispatchedGame("");
@@ -55,15 +54,22 @@ const HomePage: React.FC = () => {
     dispatch(updateUser({ email: user.email, credits: user.credits - 1 }));
   };
 
-  // SELECT LEAGUE EFFECT
+  // GET LEAGUE EFFECT
   useEffect(() => {
     dispatch(getLeagueGame({ leagueId: selectedLeague }));
   }, [dispatch, selectedLeague]);
 
+  // GET GAME EFFECT
   useEffect(() => {
-    if (!selectedLeague) return;
-    dispatch(getGameRate({ liga: selectedLeague }));
-  }, [selectedLeague, dispatch]);
+    if (!selectedLeague || !selectedGame) return;
+    dispatch(getGame({ leagueId: selectedLeague, game: selectedGame }));
+  }, [dispatch, selectedLeague, selectedGame]);
+
+  // GET GAME RATE EFFECT
+  useEffect(() => {
+    if (!selectedLeague || !selectedGame) return;
+    dispatch(getGameRate({ liga: selectedLeague, game: selectedGame }));
+  }, [selectedLeague, selectedGame, dispatch]);
 
   // GET USER EFFECT
   useEffect(() => {
@@ -71,12 +77,7 @@ const HomePage: React.FC = () => {
     dispatch(getUser({ email: user.email }));
   }, [dispatch]);
 
-  useEffect(() => {
-    if (!isUserAuthenticated) {
-      navigate(BROWSER_ROUTE.LOGIN);
-      return;
-    }
-  }, [isUserAuthenticated, navigate]);
+  console.log(gameRate, game.bet);
 
   return isUserLoading ? (
     <section className="flex justify-center items-center h-full">
@@ -182,34 +183,49 @@ const HomePage: React.FC = () => {
       />
 
       {/* TABLE STATS */}
-      {(isGameRateLoading && game.bet === "home") ||
-        (game.bet === "over25" && (
-          <section className="border-2 border-yellow-400 rounded-2xl p-4">
-            <h1 className="text-xl font-bold text-center">
-              Assertividade do sistema
-            </h1>
-            <Table>
-              <Table.Thead>
-                <Table.Tr>
-                  <Table.Th>Mercado</Table.Th>
-                  <Table.Th className="text-center">Vitorias</Table.Th>
-                  <Table.Th className="text-center">Derrotas</Table.Th>
-                </Table.Tr>
-              </Table.Thead>
-              <Table.Tbody>
-                <Table.Tr>
-                  <Table.Td>{formatMercadoLabel(game.bet)}</Table.Td>
-                  <Table.Td align="center" className="text-green-400">
-                    {gameRate[game.bet].win}
-                  </Table.Td>
-                  <Table.Td align="center" className="text-red-500">
-                    {gameRate[game.bet].loss}
-                  </Table.Td>
-                </Table.Tr>
-              </Table.Tbody>
-            </Table>
-          </section>
-        ))}
+      {isLoadingGameRate ? (
+        <section
+          className={`max-w-lg w-full bg-[#232323] p-8 rounded-2xl gap-14 self-center border-2 border-yellow-400`}
+        >
+          <div className="self-center flex flex-col items-center">
+            <RingLoader color="#ffbf69" />
+          </div>
+        </section>
+      ) : (
+        <>
+          {canShowGameRate && (
+            <section className="border-2 border-yellow-400 rounded-2xl p-4">
+              <h1 className="text-xl font-bold text-center">
+                Assertividade do sistema
+              </h1>
+              <Table>
+                <Table.Thead>
+                  <Table.Tr>
+                    <Table.Th>Mercado</Table.Th>
+                    <Table.Th className="text-center">Vitorias</Table.Th>
+                    <Table.Th className="text-center">Derrotas</Table.Th>
+                    <Table.Th className="text-center">Desenpenho</Table.Th>
+                  </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                  <Table.Tr>
+                    <Table.Td>{formatMercadoLabel(game.bet)}</Table.Td>
+                    <Table.Td align="center" className="text-green-400">
+                      {gameRate[game.bet as "over25"].win}
+                    </Table.Td>
+                    <Table.Td align="center" className="text-red-500">
+                      {gameRate[game.bet as "over25"].loss}
+                    </Table.Td>
+                    <Table.Td align="center" className="text-blue-500">
+                      {formatGameRateStats(gameRate[game.bet as "over25"].rate)}
+                    </Table.Td>
+                  </Table.Tr>
+                </Table.Tbody>
+              </Table>
+            </section>
+          )}
+        </>
+      )}
     </form>
   );
 };

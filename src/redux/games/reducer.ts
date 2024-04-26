@@ -68,26 +68,32 @@ const initialState: GameState = {
     home: {
       loss: Math.min(),
       win: Math.min(),
+      rate: Math.min(),
     },
     over25: {
       loss: Math.min(),
       win: Math.min(),
+      rate: Math.min(),
     },
     under25: {
       loss: Math.min(),
       win: Math.min(),
+      rate: Math.min(),
     },
     over35: {
       loss: Math.min(),
       win: Math.min(),
+      rate: Math.min(),
     },
     vis: {
       loss: Math.min(),
       win: Math.min(),
+      rate: Math.min(),
     },
     ambasMarcam: {
       loss: Math.min(),
       win: Math.min(),
+      rate: Math.min(),
     },
   },
   isGameRateLoading: false,

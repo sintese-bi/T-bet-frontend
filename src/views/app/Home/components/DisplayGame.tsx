@@ -21,9 +21,7 @@ const DisplayGame = ({
 }: Props) => {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [allowLoadingCompletion, setAllowLoadingCompletion] = useState(false);
-  const { game, isLoadingGames } = useSelector(
-    (state: DefaultState) => state.games
-  );
+  const { game } = useSelector((state: DefaultState) => state.games);
 
   const changeAccuracyColor = (accuracy: number) => {
     if (accuracy >= 90) return "bg-green-400";
@@ -42,7 +40,7 @@ const DisplayGame = ({
   // LOADING ROLLETE PROGRESS
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    if (isLoadingGames || allowLoadingCompletion) {
+    if (allowLoadingCompletion) {
       setLoadingProgress(0);
       interval = setInterval(() => {
         setLoadingProgress((prevProgress) => {
@@ -58,16 +56,16 @@ const DisplayGame = ({
     }
 
     return () => clearInterval(interval);
-  }, [isLoadingGames, allowLoadingCompletion]);
+  }, [allowLoadingCompletion]);
   // LOADING ROLLETE PROGRESS
   useEffect(() => {
-    if (!isLoadingGames && loadingProgress < 100) {
+    if (loadingProgress < 100) {
       setAllowLoadingCompletion(true);
     }
-  }, [isLoadingGames, loadingProgress]);
+  }, [, loadingProgress]);
   // ACCURACY LOADING PROGRESS
   useEffect(() => {
-    if (!isLoadingGames && selectedGame) {
+    if (selectedGame) {
       const targetProgress =
         parseInt(formatGameStatsPorcentage(String(game.prob)), 10) || 0;
       const interval = setInterval(() => {
@@ -82,55 +80,40 @@ const DisplayGame = ({
 
       return () => clearInterval(interval);
     }
-  }, [isLoadingGames, selectedGame, game.prob, setAccuracyLoadingProgress]);
+  }, [, selectedGame, game.prob, setAccuracyLoadingProgress]);
 
   return (
     <>
-      {isLoadingGames ? (
+      {selectedGame && (
         <section
-          className={`max-w-lg w-full bg-[#232323] p-8 rounded-2xl gap-14 self-center border-2 border-yellow-400`}
+          className={`max-w-lg w-full p-8 rounded-2xl self-center border-2 border-yellow-400`}
         >
-          <div className="self-center flex flex-col items-center">
-            <RingLoader color="#ffbf69" />
-            <Text size="lg" style={{ marginTop: 10 }}>
-              Analisando dados do jogo... {loadingProgress}%
-            </Text>
+          {/* GAME STATS */}
+          <div className="flex flex-col flex-wrap gap-5 items-center ">
+            <div className="flex flex-col items-center">
+              <Text className="text-2xl">Mercado</Text>
+              <Text className="text-green-400">
+                <b>{formatMercadoLabel(game.bet)}</b>
+              </Text>
+            </div>
+
+            <div className="flex flex-col w-full items-center">
+              <Text className="text-2xl">Acurácia</Text>
+              <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                <div
+                  className={`${changeAccuracyColor(accuracyLoadingProgress)} h-2.5 rounded-full`}
+                  style={{ width: `${accuracyLoadingProgress}%` }}
+                ></div>
+              </div>
+              <Text>
+                <b>{accuracyLoadingProgress}%</b>
+              </Text>
+            </div>
+            <div className="text-center">
+              <Text>{handleWarningText(accuracyLoadingProgress)}</Text>
+            </div>
           </div>
         </section>
-      ) : (
-        <>
-          {selectedGame && (
-            <section
-              className={`max-w-lg w-full p-8 rounded-2xl self-center border-2 border-yellow-400`}
-            >
-              {/* GAME STATS */}
-              <div className="flex flex-col flex-wrap gap-5 items-center ">
-                <div className="flex flex-col items-center">
-                  <Text className="text-2xl">Mercado</Text>
-                  <Text className="text-green-400">
-                    <b>{formatMercadoLabel(game.bet)}</b>
-                  </Text>
-                </div>
-
-                <div className="flex flex-col w-full items-center">
-                  <Text className="text-2xl">Acurácia</Text>
-                  <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-                    <div
-                      className={`${changeAccuracyColor(accuracyLoadingProgress)} h-2.5 rounded-full`}
-                      style={{ width: `${accuracyLoadingProgress}%` }}
-                    ></div>
-                  </div>
-                  <Text>
-                    <b>{accuracyLoadingProgress}%</b>
-                  </Text>
-                </div>
-                <div className="text-center">
-                  <Text>{handleWarningText(accuracyLoadingProgress)}</Text>
-                </div>
-              </div>
-            </section>
-          )}
-        </>
       )}
     </>
   );
