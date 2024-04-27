@@ -36,7 +36,7 @@ const HomePage: React.FC = () => {
   const selectedLeague = watch("league");
   const selectedGame = watch("game");
   const isLoadingGameRate = isGameRateLoading || isLoadingGames;
-  const canShowGameRate = game.bet === "home" || game.bet === "over25";
+  const canShowGameRate = game.bet !== "";
 
   const handleHasReachedLimit = () => user.credits === 0;
   const handleResetDispatchedGame = () => setDispatchedGame("");
@@ -92,7 +92,7 @@ const HomePage: React.FC = () => {
       />
 
       {/* CREDIT */}
-      <section className="text-white rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:gap-0 lg:justify-between border-2 border-yellow-400">
+      <section className="text-white rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-yellow-400">
         <div className="flex justify-between items-center w-full gap-4">
           <div className="flex gap-4">
             <p>CRÉDITOS:</p>
@@ -108,9 +108,9 @@ const HomePage: React.FC = () => {
         </div>
         <div>
           R$ 1,00 por crédito. Cada crédito lhe dá 1 opção de consulta aos
-          jogos. Ao selecionar o jogo de interesse sera computado o uso de 1
-          credito. Você pode comprar quantos créditos quiser, basta clicar no
-          botão acima comprar créditos.
+          jogos. Ao selecionar o jogo de interesse e clicar no botão{" "}
+          <b>pesquisar</b> será computado o uso de 1 crédito. Você pode comprar
+          quantos créditos quiser, basta clicar no botão acima comprar créditos.
         </div>
       </section>
 
@@ -201,15 +201,13 @@ const HomePage: React.FC = () => {
               <Table>
                 <Table.Thead>
                   <Table.Tr>
-                    <Table.Th>Mercado</Table.Th>
                     <Table.Th className="text-center">Vitorias</Table.Th>
                     <Table.Th className="text-center">Derrotas</Table.Th>
-                    <Table.Th className="text-center">Desenpenho</Table.Th>
+                    <Table.Th className="text-center">Desempenho</Table.Th>
                   </Table.Tr>
                 </Table.Thead>
                 <Table.Tbody>
                   <Table.Tr>
-                    <Table.Td>{formatMercadoLabel(game.bet)}</Table.Td>
                     <Table.Td align="center" className="text-green-400">
                       {gameRate[game.bet as "over25"].win}
                     </Table.Td>

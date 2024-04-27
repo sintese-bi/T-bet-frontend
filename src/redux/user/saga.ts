@@ -39,7 +39,7 @@ type GetUserCallProps = {
   payload: GetUserRequest;
 };
 
-function* getUserCall(action: GetUserCallProps): Generator {
+function* getUserCall(): Generator {
   const email = localStorage.getItem("email@TBet");
   try {
     const user = yield call(userApi.post, API_ROUTE.GET_USER, {
@@ -82,10 +82,14 @@ function* registerUserCall(action: RegisterUserCallProps): Generator {
       type: "success",
     });
   } catch (e) {
-    const error = e as Error;
-    console.error(error);
-
-    yield put(registerUserError(error.message));
+    const {
+      response: {
+        data: { message },
+      },
+    } = e as { response: { data: { message: string } } };
+    console.error(e);
+    Notify({ message, type: "error" });
+    yield put(registerUserError(message));
   }
 }
 

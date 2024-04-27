@@ -109,17 +109,24 @@ function* fetchGameRate({ payload }: GetGameRateProps): Generator {
       data: {
         home_list: { loss: number; win: number; rate: number };
         over_list: { loss: number; win: number; rate: number };
+        ambas_list: { loss: number; win: number; rate: number };
       };
+    };
+
+    const defaultList = {
+      loss: 0,
+      win: 0,
+      rate: 0,
     };
 
     yield put(
       getGameRateSuccess({
         home: data.home_list,
         over25: data.over_list,
-        over35: data.over_list,
-        under25: data.over_list,
-        vis: data.home_list,
-        ambasMarcam: data.home_list,
+        over35: defaultList,
+        under25: defaultList,
+        vis: defaultList,
+        ambasMarcam: data.ambas_list,
       })
     );
   } catch (error) {
