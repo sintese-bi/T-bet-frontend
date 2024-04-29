@@ -22,7 +22,6 @@ import {
 } from "../actions";
 import {
   GetGameRateRequest,
-  GetGameRateSuccess,
   GetGameRequest,
   GetGameSuccess,
   GetLeagueGameRequest,
@@ -106,27 +105,12 @@ function* fetchGameRate({ payload }: GetGameRateProps): Generator {
       game,
     });
     const { data } = response as {
-      data: {
-        home_list: { loss: number; win: number; rate: number };
-        over_list: { loss: number; win: number; rate: number };
-        ambas_list: { loss: number; win: number; rate: number };
-      };
-    };
-
-    const defaultList = {
-      loss: 0,
-      win: 0,
-      rate: 0,
+      data: { loss: number; win: number; rateWin: number };
     };
 
     yield put(
       getGameRateSuccess({
-        home: data.home_list,
-        over25: data.over_list,
-        over35: defaultList,
-        under25: defaultList,
-        vis: defaultList,
-        ambasMarcam: data.ambas_list,
+        ...data,
       })
     );
   } catch (error) {

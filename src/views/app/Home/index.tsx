@@ -208,13 +208,13 @@ const HomePage: React.FC = () => {
                 <Table.Tbody>
                   <Table.Tr>
                     <Table.Td align="center" className="text-green-400">
-                      {gameRate[game.bet as "over25"].win}
+                      {gameRate.win}
                     </Table.Td>
                     <Table.Td align="center" className="text-red-500">
-                      {gameRate[game.bet as "over25"].loss}
+                      {gameRate.loss}
                     </Table.Td>
                     <Table.Td align="center" className="text-blue-500">
-                      {formatGameRateStats(gameRate[game.bet as "over25"].rate)}
+                      {formatGameRateStats(gameRate.rateWin)}
                     </Table.Td>
                   </Table.Tr>
                 </Table.Tbody>
