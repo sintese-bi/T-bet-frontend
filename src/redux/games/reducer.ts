@@ -184,7 +184,6 @@ const AuthReducer: Reducer<GameState, GameAction> = (
       return {
         ...state,
         isGameRateLoading: false,
-        error: action.payload,
       };
     }
 
@@ -192,7 +191,6 @@ const AuthReducer: Reducer<GameState, GameAction> = (
       return {
         ...state,
         isLoadingLeagueGames: false,
-        error: action.payload,
       };
     }
 
@@ -200,7 +198,6 @@ const AuthReducer: Reducer<GameState, GameAction> = (
       return {
         ...state,
         isLoadingGames: false,
-        error: action.payload,
       };
     }
 
@@ -208,7 +205,6 @@ const AuthReducer: Reducer<GameState, GameAction> = (
       return {
         ...state,
         isIpAddressLoading: false,
-        error: action.payload,
       };
     }
 

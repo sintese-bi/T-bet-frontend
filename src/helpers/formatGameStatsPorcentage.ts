@@ -1,4 +1,4 @@
-export function formatGameStatsPorcentage(value: string) {
+export function formatGameStats(value: string) {
   return `${value}%`;
 }
 

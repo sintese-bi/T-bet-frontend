@@ -1,8 +1,4 @@
-import { RingLoader } from "react-spinners";
-import {
-  formatMercadoLabel,
-  formatGameStatsPorcentage,
-} from "../../../../helpers";
+import { formatMercadoLabel, formatGameStats } from "../../../../helpers";
 import { Text } from "@mantine/core";
 import { useSelector } from "react-redux";
 import { DefaultState } from "../../../../redux/reducers";
@@ -57,17 +53,19 @@ const DisplayGame = ({
 
     return () => clearInterval(interval);
   }, [allowLoadingCompletion]);
+
   // LOADING ROLLETE PROGRESS
   useEffect(() => {
     if (loadingProgress < 100) {
       setAllowLoadingCompletion(true);
     }
   }, [, loadingProgress]);
+
   // ACCURACY LOADING PROGRESS
   useEffect(() => {
     if (selectedGame) {
       const targetProgress =
-        parseInt(formatGameStatsPorcentage(String(game.prob)), 10) || 0;
+        parseInt(formatGameStats(String(game.prob)), 10) || 0;
       const interval = setInterval(() => {
         setAccuracyLoadingProgress((prevProgress) => {
           if (prevProgress >= targetProgress) {

@@ -197,7 +197,6 @@ const UserReducer: Reducer<UserState, UserAction> = (
       return {
         ...state,
         isUserLoading: false,
-        error: action.payload,
       };
     }
 

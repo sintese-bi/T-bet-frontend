@@ -12,7 +12,7 @@ import { useGetWindow } from "../../../hooks/useGetWindow";
 import { getUser, updateUser } from "../../../redux/user/actions";
 import DisplayGame from "./components/DisplayGame";
 import { RingLoader } from "react-spinners";
-import { formatGameRateStats, formatMercadoLabel } from "../../../helpers";
+import { formatGameRateStats } from "../../../helpers";
 
 const HomePage: React.FC = () => {
   const dispatch = useDispatch();
@@ -76,8 +76,6 @@ const HomePage: React.FC = () => {
     if (isUserLoading) return;
     dispatch(getUser({ email: user.email }));
   }, [dispatch]);
-
-  console.log(gameRate, game.bet);
 
   return isUserLoading ? (
     <section className="flex justify-center items-center h-full">
@@ -169,6 +167,7 @@ const HomePage: React.FC = () => {
             type="submit"
             bg={"green"}
             className="w-full bg-green-400 lg:justify-center"
+            disabled={isLoadingGames || handleHasReachedLimit()}
           >
             Pesquisar
           </Button>
