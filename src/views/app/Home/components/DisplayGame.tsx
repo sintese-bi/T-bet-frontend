@@ -21,7 +21,7 @@ const DisplayGame = ({
 
   const changeAccuracyColor = (accuracy: number) => {
     if (accuracy >= 90) return "bg-green-400";
-    if (accuracy >= 68) return "bg-yellow-400";
+    if (accuracy >= 51) return "bg-yellow-400";
     return "bg-red-400";
   };
 
@@ -87,7 +87,7 @@ const DisplayGame = ({
           {game.prob === 0 ? (
             <div className="max-w-lg w-full p-8 rounded-2xl self-center border-2 border-yellow-400 text-center">
               Desculpe! Jogo com baixa assertividade do sistema, busque outra
-              partida e lucre muito! 🤑
+              partida e lucre muito! 🤑 Essa consulta não gastou créditos!
             </div>
           ) : (
             <section
