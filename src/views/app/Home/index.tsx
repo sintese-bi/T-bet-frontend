@@ -48,9 +48,16 @@ const HomePage: React.FC = () => {
       });
       return;
     }
-    dispatch(getGame({ leagueId: selectedLeague, game: selectedGame }));
+
+    if (game.prob === 0) {
+      setAccuracyLoadingProgress(0);
+      setDispatchedGame(selectedGame);
+      return;
+    }
+
     setAccuracyLoadingProgress(0);
     setDispatchedGame(selectedGame);
+    dispatch(getGame({ leagueId: selectedLeague, game: selectedGame }));
     dispatch(updateUser({ email: user.email, credits: user.credits - 1 }));
   };
 
