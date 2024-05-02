@@ -28,7 +28,7 @@ const DisplayGame = ({
   const handleWarningText = (accuracy: number) => {
     if (accuracy >= 90)
       return "Temos confiança que o mercado informado será o resultado dessa partida.";
-    if (accuracy >= 68)
+    if (accuracy >= 51)
       return "Pelas nossas análises existem boas chances do mercado indicado ser o resultado da partida.";
     return "Cuidado, nosso algoritmo não recomenda entrar nessa partida.";
   };
