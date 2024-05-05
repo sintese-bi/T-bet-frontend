@@ -89,8 +89,9 @@ const DisplayGame = ({
         <>
           {game.prob === 0 ? (
             <div className="max-w-lg w-full p-8 rounded-2xl self-center border-2 border-yellow-400 text-center">
-              Essa consulta não gastou créditos! Desculpe! Jogo com baixa
-              assertividade do sistema, busque outra partida e lucre muito! 🤑
+              Essa consulta não gastou créditos! Desculpe! Ainda estou
+              aprendendo a prever este jogo! Busque outra partida e lucre muito!
+              🤑
             </div>
           ) : (
             <section

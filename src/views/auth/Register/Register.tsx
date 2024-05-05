@@ -26,7 +26,8 @@ const RegisterPage: React.FC = () => {
     <main className="flex justify-center items-center h-full">
       <section className="flex flex-col items-center gap-3 w-full lg:max-w-lg">
         <Text size="lg" className="text-center">
-          Cadastre-se e ganhe 3 créditos de bônus na plataforma.
+          Por apenas R$ 9,90 você tem acesso ilimitado durante 30 dias, basta
+          clicar em assinar. Boas apostas! 🚀.
         </Text>
         <form
           onSubmit={handleSubmit(onSubmit)}

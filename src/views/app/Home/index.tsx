@@ -99,16 +99,12 @@ const HomePage: React.FC = () => {
       {/* CREDIT */}
       <section className="text-white rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-yellow-400">
         <div className="flex justify-between items-center w-full gap-4">
-          <div className="flex gap-4">
-            <p>CRÉDITOS:</p>
-            <p>{user.credits}</p>
-          </div>
           <a
             target="_blank"
             href="https://buy.stripe.com/7sIbMl6Jx8T28Rq9Bo"
             className="bg-green-500 p-2 rounded-md text-white text-center"
           >
-            Comprar créditos
+            Comprar
           </a>
         </div>
         <div>
