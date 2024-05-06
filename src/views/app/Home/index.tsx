@@ -102,16 +102,14 @@ const HomePage: React.FC = () => {
           <a
             target="_blank"
             href="https://buy.stripe.com/7sIbMl6Jx8T28Rq9Bo"
-            className="bg-green-500 p-2 rounded-md text-white text-center"
+            className="bg-green-500 p-2 rounded-md text-white text-center w-full"
           >
             Comprar
           </a>
         </div>
-        <div>
-          R$ 1,00 por crédito. Cada crédito lhe dá 1 opção de consulta aos
-          jogos. Ao selecionar o jogo de interesse e clicar no botão{" "}
-          <b>pesquisar</b> será computado o uso de 1 crédito. Você pode comprar
-          quantos créditos quiser, basta clicar no botão acima comprar créditos.
+        <div className="w-full text-center">
+          Por apenas R$ 9,90 você tem acesso ilimitado a plataforma por 30 dias,
+          basta clicar em comprar créditos, boas apostas!
         </div>
       </section>
 
