@@ -13,9 +13,11 @@ import { getUser, updateUser } from "../../../redux/user/actions";
 import DisplayGame from "./components/DisplayGame";
 import { RingLoader } from "react-spinners";
 import { formatGameRateStats } from "../../../helpers";
+import { useIsPlanExpired } from "../../../hooks";
 
 const HomePage: React.FC = () => {
   const dispatch = useDispatch();
+  const isUserPlanExpired = useIsPlanExpired();
   const { user, isUserLoading } = useSelector(
     (state: DefaultState) => state.auth
   );
@@ -84,6 +86,16 @@ const HomePage: React.FC = () => {
     dispatch(getUser({ email: user.email }));
   }, [dispatch]);
 
+  useEffect(() => {
+    if (isUserPlanExpired) {
+      Notify({
+        message:
+          "Seu plano expirou, por favor, compre para ter mais 30 dias de acesso.",
+        type: "error",
+      });
+    }
+  }, []);
+
   return isUserLoading ? (
     <section className="flex justify-center items-center h-full">
       <RingLoader color="#ffbf69" />
@@ -109,7 +121,7 @@ const HomePage: React.FC = () => {
         </div>
         <div className="w-full text-center">
           Por apenas R$ 9,90 você tem acesso ilimitado a plataforma por 30 dias,
-          basta clicar em comprar créditos, boas apostas!
+          basta clicar em comprar, boas apostas!
         </div>
       </section>
 
@@ -168,7 +180,9 @@ const HomePage: React.FC = () => {
             type="submit"
             bg={"green"}
             className="w-full bg-green-400 lg:justify-center"
-            disabled={isLoadingGames || handleHasReachedLimit()}
+            disabled={
+              isLoadingGames || handleHasReachedLimit() || isUserPlanExpired
+            }
           >
             Pesquisar
           </Button>
