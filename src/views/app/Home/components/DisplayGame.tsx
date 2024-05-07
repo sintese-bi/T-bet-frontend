@@ -1,4 +1,4 @@
-import { formatMercadoLabel, formatGameStats } from "../../../../helpers";
+import { formatGameStats } from "../../../../helpers";
 import { Text } from "@mantine/core";
 import { useSelector } from "react-redux";
 import { DefaultState } from "../../../../redux/reducers";
@@ -88,8 +88,8 @@ const DisplayGame = ({
         <>
           {game.prob === 0 ? (
             <div className="max-w-lg w-full p-8 rounded-2xl self-center border-2 border-yellow-400 text-center">
-              Desculpe! Ainda estou aprendendo a prever este jogo! Busque outra
-              partida e lucre muito! 🤑
+              Desculpe! Estou aprendendo sobre este jogo. Busque outra partida e
+              lucre muito. Essa pesquisa não gastou nenhuma consulta!
             </div>
           ) : (
             <section
