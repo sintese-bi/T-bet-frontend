@@ -111,6 +111,12 @@ const HomePage: React.FC = () => {
       {/* CREDIT */}
       <section className="text-white rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-yellow-400">
         <div className="w-full text-center">
+          {user.credits <= 3 && (
+            <>
+              Você possui 3 consultas gratuitas, pesquise o jogo de interesse e
+              aproveite!
+            </>
+          )}{" "}
           Por apenas R$ 9,90 você tem acesso ilimitado a plataforma por 30 dias,
           boas apostas!
         </div>
