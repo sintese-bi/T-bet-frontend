@@ -60,7 +60,15 @@ const HomePage: React.FC = () => {
     setAccuracyLoadingProgress(0);
     setDispatchedGame(selectedGame);
     dispatch(getGame({ leagueId: selectedLeague, game: selectedGame }));
+    console.log(
+      user.credits,
+      "creditos - Pesquisa será realizada [Depois deletar]"
+    );
     dispatch(updateUser({ email: user.email, credits: user.credits - 1 }));
+    console.log(
+      user.credits - 1,
+      "creditos - Pesquisa foi realizada [Depois deletar]"
+    );
   };
 
   // GET LEAGUE EFFECT
@@ -96,6 +104,8 @@ const HomePage: React.FC = () => {
     }
   }, []);
 
+  console.log(user.credits, "creditos [Depois deletar]");
+
   return isUserLoading ? (
     <section className="flex justify-center items-center h-full">
       <RingLoader color="#ffbf69" />
@@ -111,15 +121,15 @@ const HomePage: React.FC = () => {
       {/* CREDIT */}
       <section className="text-white rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-yellow-400">
         <div className="w-full text-center">
-          {user.credits <= 3 ? (
-            <>
-              você possui 3 consultas gratuitas, pesquise o jogo de interesse e
-              aproveite!
-            </>
-          ) : (
+          {user.credits > 3 || user.credits === 0 ? (
             <>
               Por apenas R$ 9,90 você tem acesso ilimitado a plataforma por 30
               dias, boas apostas!
+            </>
+          ) : (
+            <>
+              você possui 3 consultas gratuitas, pesquise o jogo de interesse e
+              aproveite!
             </>
           )}
         </div>
