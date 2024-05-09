@@ -128,7 +128,7 @@ const HomePage: React.FC = () => {
             </>
           ) : (
             <>
-              você possui 3 consultas gratuitas, pesquise o jogo de interesse e
+              Você possui 3 consultas gratuitas, pesquise o jogo de interesse e
               aproveite!
             </>
           )}

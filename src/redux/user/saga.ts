@@ -34,17 +34,21 @@ import { API_ROUTE, BROWSER_ROUTE } from "../../constants";
 import { userApi } from "../../services/userApi";
 import { Notify } from "../../utils";
 
-type GetUserCallProps = {
-  type: string;
-  payload: GetUserRequest;
-};
-
 function* getUserCall(): Generator {
   const email = localStorage.getItem("email@TBet");
   try {
-    const user = yield call(userApi.post, API_ROUTE.GET_USER, {
-      use_email: email,
-    });
+    const user = yield call(
+      userApi.post,
+      API_ROUTE.GET_USER,
+      {
+        use_email: email,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token@TBet")}`,
+        },
+      }
+    );
     const {
       data: {
         message: { use_email, use_quant },
@@ -101,10 +105,19 @@ type UpdateUserCallProps = {
 function* updateUserCall(action: UpdateUserCallProps): Generator {
   const { email, credits } = action.payload;
   try {
-    const user = yield call(userApi.put, API_ROUTE.UPDATE_USER, {
-      use_email: email,
-      use_quant: credits,
-    });
+    const user = yield call(
+      userApi.put,
+      API_ROUTE.UPDATE_USER,
+      {
+        use_email: email,
+        use_quant: credits,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token@TBet")}`,
+        },
+      }
+    );
 
     yield put(updateUserSuccess(user));
   } catch (e) {
@@ -187,9 +200,18 @@ type ResetPasswordLinkCallProps = {
 
 function* resetPasswordLinkCall(action: ResetPasswordLinkCallProps): Generator {
   try {
-    yield call(userApi.post, API_ROUTE.RESET_PASSWORD_LINK, {
-      use_email: action.payload.email,
-    });
+    yield call(
+      userApi.post,
+      API_ROUTE.RESET_PASSWORD_LINK,
+      {
+        use_email: action.payload.email,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token@TBet")}`,
+        },
+      }
+    );
 
     yield put(resetPasswordLinkSuccess());
     Notify({
@@ -220,6 +242,11 @@ function* resetPasswordCall(action: ResetPasswordCallProps): Generator {
       ),
       {
         use_password: password,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token@TBet")}`,
+        },
       }
     );
     navigate(BROWSER_ROUTE.LOGIN);
