@@ -43,13 +43,13 @@ const HomePage: React.FC = () => {
   const handleHasReachedLimit = () => user.credits === 0;
   const handleResetDispatchedGame = () => setDispatchedGame("");
   const onSubmit = () => {
-    if (handleHasReachedLimit()) {
-      Notify({
-        message: "Você atingiu o limite de consultas.",
-        type: "error",
-      });
-      return;
-    }
+    // if (handleHasReachedLimit()) {
+    //   Notify({
+    //     message: "Você atingiu o limite de consultas.",
+    //     type: "error",
+    //   });
+    //   return;
+    // }
 
     if (game.prob === 0) {
       setAccuracyLoadingProgress(0);
@@ -60,15 +60,7 @@ const HomePage: React.FC = () => {
     setAccuracyLoadingProgress(0);
     setDispatchedGame(selectedGame);
     dispatch(getGame({ leagueId: selectedLeague, game: selectedGame }));
-    console.log(
-      user.credits,
-      "creditos - Pesquisa será realizada [Depois deletar]"
-    );
     dispatch(updateUser({ email: user.email, credits: user.credits - 1 }));
-    console.log(
-      user.credits - 1,
-      "creditos - Pesquisa foi realizada [Depois deletar]"
-    );
   };
 
   // GET LEAGUE EFFECT
@@ -103,8 +95,6 @@ const HomePage: React.FC = () => {
       });
     }
   }, []);
-
-  console.log(user.credits, "creditos [Depois deletar]");
 
   return isUserLoading ? (
     <section className="flex justify-center items-center h-full">
@@ -176,19 +166,19 @@ const HomePage: React.FC = () => {
                 placeholder="Selecionar jogo"
                 data={games.map((game) => game)}
                 onChange={(value) => {
-                  if (handleHasReachedLimit()) {
-                    Notify({
-                      message: "Você atingiu o limite de consultas.",
-                      type: "error",
-                    });
-                    return;
-                  }
+                  // if (handleHasReachedLimit()) {
+                  //   Notify({
+                  //     message: "Você atingiu o limite de consultas.",
+                  //     type: "error",
+                  //   });
+                  //   return;
+                  // }
                   handleResetDispatchedGame();
                   field.onChange(value);
                 }}
                 nothingFoundMessage="O nome dos times deve ser igual a como aparece na bet."
                 searchable
-                disabled={isLoadingGames || handleHasReachedLimit()}
+                // disabled={isLoadingGames || handleHasReachedLimit()}
               />
             )}
           />
@@ -199,9 +189,9 @@ const HomePage: React.FC = () => {
             type="submit"
             bg={"green"}
             className="w-full bg-green-400 lg:justify-center"
-            disabled={
-              isLoadingGames || handleHasReachedLimit() || isUserPlanExpired
-            }
+            // disabled={
+            //   isLoadingGames || handleHasReachedLimit() || isUserPlanExpired
+            // }
           >
             Pesquisar
           </Button>
