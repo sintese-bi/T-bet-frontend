@@ -14,6 +14,8 @@ import DisplayGame from "./components/DisplayGame";
 import { RingLoader } from "react-spinners";
 import { formatGameRateStats } from "../../../helpers";
 import { useIsPlanExpired } from "../../../hooks";
+import { useDisclosure } from "@mantine/hooks";
+import { BuyPlanModal } from "./components/BuyPlanModal";
 
 const HomePage: React.FC = () => {
   const dispatch = useDispatch();
@@ -35,15 +37,21 @@ const HomePage: React.FC = () => {
   const [dispatchedGame, setDispatchedGame] = useState("");
   const customWindow = useGetWindow();
 
+  const [isBuyModalOpen, { close: closeBuyModal, open: openBuyModal }] =
+    useDisclosure(false);
+  const handleCloseBuyModal = () => closeBuyModal();
+  const handleOpenBuyModal = () => openBuyModal();
+
   const selectedLeague = watch("league");
   const selectedGame = watch("game");
   const isLoadingGameRate = isGameRateLoading || isLoadingGames;
   const canShowGameRate = game.bet !== "";
 
-  const handleHasReachedLimit = () => user.credits === 0;
+  const handleBlockGameSearch = () =>
+    user.credits === 0 || isUserPlanExpired || isLoadingGames;
   const handleResetDispatchedGame = () => setDispatchedGame("");
   const onSubmit = () => {
-    if (handleHasReachedLimit()) {
+    if (handleBlockGameSearch()) {
       Notify({
         message: "Você atingiu o limite de consultas.",
         type: "error",
@@ -126,8 +134,8 @@ const HomePage: React.FC = () => {
         <div className="flex justify-between items-center w-full gap-4">
           <a
             target="_blank"
-            href="https://buy.stripe.com/aEUg2B0l9d9iffObJp"
-            className="bg-green-500 p-2 rounded-md text-white text-center w-full"
+            className="bg-green-500 p-2 rounded-md text-white text-center w-full cursor-pointer"
+            onClick={handleOpenBuyModal}
           >
             Comprar
           </a>
@@ -166,19 +174,12 @@ const HomePage: React.FC = () => {
                 placeholder="Selecionar jogo"
                 data={games.map((game) => game)}
                 onChange={(value) => {
-                  if (handleHasReachedLimit()) {
-                    Notify({
-                      message: "Você atingiu o limite de consultas.",
-                      type: "error",
-                    });
-                    return;
-                  }
                   handleResetDispatchedGame();
                   field.onChange(value);
                 }}
                 nothingFoundMessage="O nome dos times deve ser igual a como aparece na bet."
                 searchable
-                disabled={isLoadingGames || handleHasReachedLimit()}
+                disabled={handleBlockGameSearch()}
               />
             )}
           />
@@ -189,9 +190,7 @@ const HomePage: React.FC = () => {
             type="submit"
             bg={"green"}
             className="w-full bg-green-400 lg:justify-center"
-            disabled={
-              isLoadingGames || handleHasReachedLimit() || isUserPlanExpired
-            }
+            disabled={handleBlockGameSearch()}
           >
             Pesquisar
           </Button>
@@ -247,6 +246,8 @@ const HomePage: React.FC = () => {
           )}
         </>
       )}
+
+      <BuyPlanModal isOpen={isBuyModalOpen} onClose={handleCloseBuyModal} />
     </form>
   );
 };
