@@ -27,7 +27,6 @@ import {
   GetLeagueGameRequest,
 } from "./types";
 import { api } from "../../services";
-import { Notify } from "../../utils";
 import axios from "axios";
 import { API_ROUTE } from "../../constants";
 
@@ -87,7 +86,6 @@ function* fetchGame({ payload }: GetGameProps): Generator {
   } catch (error) {
     console.error(error);
     yield put(getGameError({ error }));
-    Notify({ message: "Erro ao recuperar dados do jogo!", type: "error" });
   }
 }
 
@@ -116,7 +114,6 @@ function* fetchGameRate({ payload }: GetGameRateProps): Generator {
   } catch (error) {
     console.error(error);
     yield put(getGameRateError({ error }));
-    Notify({ message: "Erro ao recuperar dados do jogo!", type: "error" });
   }
 }
 

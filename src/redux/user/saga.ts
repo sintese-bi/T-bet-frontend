@@ -92,7 +92,6 @@ function* registerUserCall(action: RegisterUserCallProps): Generator {
       },
     } = e as { response: { data: { message: string } } };
     console.error(e);
-    Notify({ message, type: "error" });
     yield put(registerUserError(message));
   }
 }
