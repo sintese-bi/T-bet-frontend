@@ -35,7 +35,60 @@ const HomePage: React.FC = () => {
 
   const [accuracyLoadingProgress, setAccuracyLoadingProgress] = useState(0);
   const [dispatchedGame, setDispatchedGame] = useState("");
+  const [sortedGames, setSortedGames] = useState<string[]>(games);
   const customWindow = useGetWindow();
+
+  const handleSortGames = (search: string) => {
+    const searchValue = search
+      .toLowerCase()
+      .replace(/(^|\s)\S/g, (firstLetter: string) => {
+        return firstLetter.toUpperCase();
+      });
+
+    const sortedGames = games
+      .filter((game) => game.includes(searchValue))
+      .sort((a, b) => {
+        const [teamOneGameOne, teamTwoGameOne] = a
+          .split("-")
+          .map((team) => team.trim());
+        const [teamOneGameTwo, teamTwoGameTwo] = b
+          .split("-")
+          .map((team) => team.trim());
+
+        const isTeamOneGameOneSearch = teamOneGameOne.includes(searchValue);
+        const isTeamOneGameTwoSearch = teamOneGameTwo.includes(searchValue);
+        const isTeamTwoGameOneSearch = teamTwoGameOne.includes(searchValue);
+        const isTeamTwoGameTwoSearch = teamTwoGameTwo.includes(searchValue);
+
+        if (isTeamOneGameOneSearch && isTeamOneGameTwoSearch) {
+          return teamTwoGameOne.localeCompare(teamTwoGameTwo);
+        }
+
+        if (isTeamOneGameOneSearch && !isTeamOneGameTwoSearch) {
+          return -1;
+        }
+
+        if (!isTeamOneGameOneSearch && isTeamOneGameTwoSearch) {
+          return 1;
+        }
+
+        if (isTeamTwoGameOneSearch && isTeamTwoGameTwoSearch) {
+          return teamOneGameOne.localeCompare(teamOneGameTwo);
+        }
+
+        if (isTeamTwoGameOneSearch && !isTeamTwoGameTwoSearch) {
+          return -1;
+        }
+
+        if (!isTeamTwoGameOneSearch && isTeamTwoGameTwoSearch) {
+          return 1;
+        }
+
+        return 0;
+      });
+
+    setSortedGames(sortedGames);
+  };
 
   const [isBuyModalOpen, { close: closeBuyModal, open: openBuyModal }] =
     useDisclosure(false);
@@ -172,7 +225,7 @@ const HomePage: React.FC = () => {
               <Select
                 {...field}
                 placeholder="Selecionar jogo"
-                data={games.map((game) => game)}
+                data={sortedGames.map((game) => game)}
                 onChange={(value) => {
                   handleResetDispatchedGame();
                   field.onChange(value);
@@ -180,6 +233,7 @@ const HomePage: React.FC = () => {
                 nothingFoundMessage="O nome dos times deve ser igual a como aparece na bet."
                 searchable
                 disabled={handleBlockGameSearch()}
+                onSearchChange={handleSortGames}
               />
             )}
           />

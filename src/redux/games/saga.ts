@@ -59,6 +59,7 @@ function* fetchLeagueGames({ payload }: GetLeagueGameProps): Generator {
     const {
       data: { games },
     } = response as { data: { games: string[] } };
+
     yield put(getLeagueGameSuccess({ games }));
   } catch (error) {
     console.error(error);
