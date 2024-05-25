@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
+import Confetti from "react-confetti";
+import { RingLoader } from "react-spinners";
 import { Button, Select, Table } from "@mantine/core";
-import { useDispatch, useSelector } from "react-redux";
+import { useDisclosure } from "@mantine/hooks";
 import { useForm, Controller } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
 import { getGame, getGameRate, getLeagueGame } from "../../../redux/actions";
 import { DefaultState } from "../../../redux/reducers";
 import { LEAGUE } from "../../../constants";
 import { Notify } from "../../../utils";
 
-import Confetti from "react-confetti";
 import { useGetWindow } from "../../../hooks/useGetWindow";
 import { getUser, updateUser } from "../../../redux/user/actions";
 import DisplayGame from "./components/DisplayGame";
-import { RingLoader } from "react-spinners";
 import { formatGameRateStats } from "../../../helpers";
 import { useIsPlanExpired } from "../../../hooks";
-import { useDisclosure } from "@mantine/hooks";
 import { BuyPlanModal } from "./components/BuyPlanModal";
 
 const HomePage: React.FC = () => {
@@ -35,60 +35,60 @@ const HomePage: React.FC = () => {
 
   const [accuracyLoadingProgress, setAccuracyLoadingProgress] = useState(0);
   const [dispatchedGame, setDispatchedGame] = useState("");
-  const [sortedGames, setSortedGames] = useState<string[]>(games);
+  const [sortedGames, setSortedGames] = useState<string[]>([]);
   const customWindow = useGetWindow();
 
-  const handleSortGames = (search: string) => {
-    const searchValue = search
-      .toLowerCase()
-      .replace(/(^|\s)\S/g, (firstLetter: string) => {
-        return firstLetter.toUpperCase();
-      });
+  // const handleSortGames = (search: string) => {
+  //   const searchValue = search
+  //     .toLowerCase()
+  //     .replace(/(^|\s)\S/g, (firstLetter: string) => {
+  //       return firstLetter.toUpperCase();
+  //     });
 
-    const sortedGames = games
-      .filter((game) => game.includes(searchValue))
-      .sort((a, b) => {
-        const [teamOneGameOne, teamTwoGameOne] = a
-          .split("-")
-          .map((team) => team.trim());
-        const [teamOneGameTwo, teamTwoGameTwo] = b
-          .split("-")
-          .map((team) => team.trim());
+  //   const sortGames = games
+  //     .filter((game) => game.toLowerCase().includes(search.toLowerCase()))
+  //     .sort((a, b) => {
+  //       const [teamOneGameOne, teamTwoGameOne] = a
+  //         .split("-")
+  //         .map((team) => team.trim());
+  //       const [teamOneGameTwo, teamTwoGameTwo] = b
+  //         .split("-")
+  //         .map((team) => team.trim());
 
-        const isTeamOneGameOneSearch = teamOneGameOne.includes(searchValue);
-        const isTeamOneGameTwoSearch = teamOneGameTwo.includes(searchValue);
-        const isTeamTwoGameOneSearch = teamTwoGameOne.includes(searchValue);
-        const isTeamTwoGameTwoSearch = teamTwoGameTwo.includes(searchValue);
+  //       const isTeamOneGameOneSearch = teamOneGameOne.includes(searchValue);
+  //       const isTeamOneGameTwoSearch = teamOneGameTwo.includes(searchValue);
+  //       const isTeamTwoGameOneSearch = teamTwoGameOne.includes(searchValue);
+  //       const isTeamTwoGameTwoSearch = teamTwoGameTwo.includes(searchValue);
 
-        if (isTeamOneGameOneSearch && isTeamOneGameTwoSearch) {
-          return teamTwoGameOne.localeCompare(teamTwoGameTwo);
-        }
+  //       if (isTeamOneGameOneSearch && isTeamOneGameTwoSearch) {
+  //         return teamTwoGameOne.localeCompare(teamTwoGameTwo);
+  //       }
 
-        if (isTeamOneGameOneSearch && !isTeamOneGameTwoSearch) {
-          return -1;
-        }
+  //       if (isTeamOneGameOneSearch && !isTeamOneGameTwoSearch) {
+  //         return -1;
+  //       }
 
-        if (!isTeamOneGameOneSearch && isTeamOneGameTwoSearch) {
-          return 1;
-        }
+  //       if (!isTeamOneGameOneSearch && isTeamOneGameTwoSearch) {
+  //         return 1;
+  //       }
 
-        if (isTeamTwoGameOneSearch && isTeamTwoGameTwoSearch) {
-          return teamOneGameOne.localeCompare(teamOneGameTwo);
-        }
+  //       if (isTeamTwoGameOneSearch && isTeamTwoGameTwoSearch) {
+  //         return teamOneGameOne.localeCompare(teamOneGameTwo);
+  //       }
 
-        if (isTeamTwoGameOneSearch && !isTeamTwoGameTwoSearch) {
-          return -1;
-        }
+  //       if (isTeamTwoGameOneSearch && !isTeamTwoGameTwoSearch) {
+  //         return -1;
+  //       }
 
-        if (!isTeamTwoGameOneSearch && isTeamTwoGameTwoSearch) {
-          return 1;
-        }
+  //       if (!isTeamTwoGameOneSearch && isTeamTwoGameTwoSearch) {
+  //         return 1;
+  //       }
 
-        return 0;
-      });
+  //       return 0;
+  //     });
 
-    setSortedGames(sortedGames);
-  };
+  //   setSortedGames(sortGames);
+  // };
 
   const [isBuyModalOpen, { close: closeBuyModal, open: openBuyModal }] =
     useDisclosure(false);
@@ -102,7 +102,9 @@ const HomePage: React.FC = () => {
 
   const handleBlockGameSearch = () =>
     user.credits === 0 || isUserPlanExpired || isLoadingGames;
+
   const handleResetDispatchedGame = () => setDispatchedGame("");
+
   const onSubmit = () => {
     if (handleBlockGameSearch()) {
       Notify({
@@ -157,6 +159,10 @@ const HomePage: React.FC = () => {
     }
   }, []);
 
+  useEffect(() => {
+    setSortedGames(games);
+  }, [games]);
+
   return isUserLoading ? (
     <section className="flex justify-center items-center h-full">
       <RingLoader color="#ffbf69" />
@@ -170,7 +176,7 @@ const HomePage: React.FC = () => {
       />
 
       {/* CREDIT */}
-      <section className="text-white rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-yellow-400">
+      <section className="rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-green-400">
         <div className="w-full text-center">
           {user.credits > 3 || user.credits === 0 ? (
             <>
@@ -196,7 +202,7 @@ const HomePage: React.FC = () => {
       </section>
 
       {/* SELECTORS */}
-      <form className="flex flex-wrap items-end justify-center gap-10 md:gap-52 lg:flex-nowrap border-2 border-yellow-400 rounded-2xl p-4">
+      <div className="flex flex-wrap items-end justify-center gap-10 md:gap-52 lg:flex-nowrap border-2 border-green-400 rounded-2xl p-4">
         <div className="w-full">
           <h1 className="text-2xl font-bold text-center lg:text-left">
             Selecione a liga
@@ -233,7 +239,6 @@ const HomePage: React.FC = () => {
                 nothingFoundMessage="O nome dos times deve ser igual a como aparece na bet."
                 searchable
                 disabled={handleBlockGameSearch()}
-                onSearchChange={handleSortGames}
               />
             )}
           />
@@ -249,7 +254,7 @@ const HomePage: React.FC = () => {
             Pesquisar
           </Button>
         )}
-      </form>
+      </div>
 
       {/* GAME INFO */}
       <DisplayGame
@@ -261,7 +266,7 @@ const HomePage: React.FC = () => {
       {/* TABLE STATS */}
       {isLoadingGameRate ? (
         <section
-          className={`max-w-lg w-full bg-[#232323] p-8 rounded-2xl gap-14 self-center border-2 border-yellow-400`}
+          className={`max-w-lg w-full p-8 rounded-2xl gap-14 self-center border-2 border-green-400`}
         >
           <div className="self-center flex flex-col items-center">
             <RingLoader color="#ffbf69" />
@@ -270,7 +275,7 @@ const HomePage: React.FC = () => {
       ) : (
         <>
           {canShowGameRate && (
-            <section className="border-2 border-yellow-400 rounded-2xl p-4">
+            <section className="border-2 border-green-400 rounded-2xl p-4">
               <h1 className="text-xl font-bold text-center">
                 Assertividade do sistema
               </h1>

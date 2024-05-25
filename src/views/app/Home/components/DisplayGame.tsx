@@ -87,13 +87,13 @@ const DisplayGame = ({
       {selectedGame && (
         <>
           {game.prob === 0 ? (
-            <div className="max-w-lg w-full p-8 rounded-2xl self-center border-2 border-yellow-400 text-center">
+            <div className="max-w-lg w-full p-8 rounded-2xl self-center border-2 border-green-400 text-center">
               Desculpe! Estou aprendendo sobre este jogo. Busque outra partida e
               lucre muito. Essa pesquisa não gastou nenhuma consulta!
             </div>
           ) : (
             <section
-              className={`max-w-lg w-full p-8 rounded-2xl self-center border-2 border-yellow-400`}
+              className={`max-w-lg w-full p-8 rounded-2xl self-center border-2 border-green-400`}
             >
               {/* GAME STATS */}
               <div className="flex flex-col flex-wrap gap-5 items-center ">
@@ -102,6 +102,20 @@ const DisplayGame = ({
                   <Text className="text-green-400 text-lg">
                     <b>{game.bet}</b>
                   </Text>
+                  {game.martinGale === 1 && (
+                    <div className="flex-col gap-4 text-center mt-2">
+                      <Text className="text-green-400">Com 3 gales:</Text>
+                      <Text className="text-green-400">
+                        1 gale: 0.5% da banca
+                      </Text>
+                      <Text className="text-green-400">
+                        2 gale: 1.0% da banca
+                      </Text>
+                      <Text className="text-green-400">
+                        3 gale: 2.0% da banca
+                      </Text>
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex flex-col w-full items-center">

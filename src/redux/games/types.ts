@@ -20,6 +20,7 @@ export type GetGameRequest = {
 export type GetGameSuccess = {
   bet: string;
   prob: number;
+  martinGale: 0 | 1;
   tableData: any[];
 };
 

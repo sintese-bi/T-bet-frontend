@@ -27,7 +27,6 @@ type GameState = {
   leagues: string[];
   game: GetGameSuccess;
   games: string[];
-  gameStats: GetGameSuccess;
   gameRate: GetGameRateSuccess;
   isGameRateLoading: boolean;
   isIpAddressLoading: boolean;
@@ -54,14 +53,10 @@ const initialState: GameState = {
   game: {
     bet: "",
     prob: 0,
+    martinGale: 0,
     tableData: [],
   },
   games: [],
-  gameStats: {
-    bet: "",
-    prob: 0,
-    tableData: [],
-  },
   gameRate: {
     loss: 0,
     win: 0,
@@ -92,11 +87,13 @@ const AuthReducer: Reducer<GameState, GameAction> = (
     case GET_LEAGUE_GAME_SUCCESS: {
       const payload = action.payload as GetLeagueGameSuccess;
       const sortedGames = payload.games.sort((a, b) => {
-        const teamOneGameOne = a.split("-")[0].trim();
-        const teamTwoGameOne = a.split("-")[1].trim();
+        const [teamOneGameOne, teamTwoGameOne] = a
+          .split("-")
+          .map((team) => team.trim());
 
-        const teamOneGameTwo = b.split("-")[0].trim();
-        const teamTwoGameTwo = b.split("-")[1].trim();
+        const [teamOneGameTwo, teamTwoGameTwo] = b
+          .split("-")
+          .map((team) => team.trim());
 
         const isTeamOneGameOneHigher =
           teamOneGameOne.localeCompare(teamOneGameTwo);
