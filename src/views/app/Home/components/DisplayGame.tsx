@@ -118,7 +118,7 @@ const DisplayGame = ({
                   )}
                 </div>
 
-                <div className="flex flex-col w-full items-center">
+                {/* <div className="flex flex-col w-full items-center">
                   <Text className="text-2xl">Acurácia</Text>
                   <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                     <div
@@ -129,9 +129,9 @@ const DisplayGame = ({
                   <Text>
                     <b>{accuracyLoadingProgress}%</b>
                   </Text>
-                </div>
+                </div> */}
                 <div className="text-center">
-                  <Text>{handleWarningText(accuracyLoadingProgress)}</Text>
+                  <Text>{handleWarningText(game.prob)}</Text>
                 </div>
               </div>
             </section>
