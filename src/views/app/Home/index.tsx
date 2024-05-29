@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Confetti from "react-confetti";
 import { RingLoader } from "react-spinners";
-import { Button, Select, Table } from "@mantine/core";
+import { Button, Select, Table, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm, Controller } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -256,55 +256,72 @@ const HomePage: React.FC = () => {
         )}
       </div>
 
-      {/* GAME INFO */}
-      <DisplayGame
-        selectedGame={dispatchedGame}
-        accuracyLoadingProgress={accuracyLoadingProgress}
-        setAccuracyLoadingProgress={setAccuracyLoadingProgress}
-      />
-
-      {/* TABLE STATS */}
-      {isLoadingGameRate ? (
-        <section
-          className={`max-w-lg w-full p-8 rounded-2xl gap-14 self-center border-2 border-green-400`}
-        >
-          <div className="self-center flex flex-col items-center">
-            <RingLoader color="#ffbf69" />
-          </div>
-        </section>
-      ) : (
-        <>
-          {canShowGameRate && (
-            <section className="border-2 border-green-400 rounded-2xl p-4">
-              <h1 className="text-xl font-bold text-center">
-                Assertividade do sistema
-              </h1>
-              <Table>
-                <Table.Thead>
-                  <Table.Tr>
-                    <Table.Th className="text-center">Vitorias</Table.Th>
-                    <Table.Th className="text-center">Derrotas</Table.Th>
-                    <Table.Th className="text-center">Desempenho</Table.Th>
-                  </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>
-                  <Table.Tr>
-                    <Table.Td align="center" className="text-green-400">
-                      {gameRate.win}
-                    </Table.Td>
-                    <Table.Td align="center" className="text-red-500">
-                      {gameRate.loss}
-                    </Table.Td>
-                    <Table.Td align="center" className="text-blue-500">
-                      {formatGameRateStats(gameRate.rateWin)}
-                    </Table.Td>
-                  </Table.Tr>
-                </Table.Tbody>
-              </Table>
-            </section>
-          )}
-        </>
-      )}
+      {/* GAME STATS */}
+      <div className="border-2 border-green-500 rounded-lg">
+        <Table>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th className="text-center">14:03</Table.Th>
+              <Table.Th className="text-center">14:16</Table.Th>
+              <Table.Th className="text-center">14:39</Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            <Table.Tr>
+              <Table.Td align="center" className="text-yellow-400">
+                Odd: 2.10
+              </Table.Td>
+              <Table.Td align="center" className="text-yellow-400">
+                Odd: 1.60
+              </Table.Td>
+              <Table.Td align="center" className="text-yellow-400">
+                Odd: 2.20
+              </Table.Td>
+            </Table.Tr>
+            <Table.Tr>
+              <Table.Td align="center" className="text-green-400">
+                Menos de 2.5
+              </Table.Td>
+              <Table.Td align="center" className="text-green-400">
+                Mais de 2.5
+              </Table.Td>
+              <Table.Td align="center" className="text-green-400">
+                Mais de 2.5
+              </Table.Td>
+            </Table.Tr>
+            <Table.Tr>
+              <Table.Td align="center" className="">
+                Pelas nossas análises existem boas chances do mercado indicado
+                ser o resultado da partida.
+              </Table.Td>
+              <Table.Td align="center">
+                Temos confiança que o mercado informado será o resultado dessa
+                partida.
+              </Table.Td>
+              <Table.Td align="center">
+                Cuidado, nosso algoritmo não recomenda entrar nessa partida.
+              </Table.Td>
+            </Table.Tr>
+            <Table.Tr>
+              <Table.Td align="center">
+                <Text>Vitórias: 3</Text>
+                <Text>Derrotas: 6</Text>
+                <Text>Desenpenho: 50%</Text>
+              </Table.Td>
+              <Table.Td align="center">
+                <Text>Vitórias: 10</Text>
+                <Text>Derrotas: 2</Text>
+                <Text>Desenpenho: 70%</Text>
+              </Table.Td>
+              <Table.Td align="center">
+                <Text>Vitórias: 0</Text>
+                <Text>Derrotas: 14</Text>
+                <Text>Desenpenho: 4%</Text>
+              </Table.Td>
+            </Table.Tr>
+          </Table.Tbody>
+        </Table>
+      </div>
 
       <BuyPlanModal isOpen={isBuyModalOpen} onClose={handleCloseBuyModal} />
     </form>

@@ -106,19 +106,19 @@ const DisplayGame = ({
                     <div className="flex-col gap-4 text-center mt-2">
                       <Text className="text-green-400">Com 3 gales:</Text>
                       <Text className="text-green-400">
-                        1 gale: 0.5% da banca
+                        1 entrada: 0.5% da banca
                       </Text>
                       <Text className="text-green-400">
-                        2 gale: 1.0% da banca
+                        2 entrada: 1.0% da banca
                       </Text>
                       <Text className="text-green-400">
-                        3 gale: 2.0% da banca
+                        3 entrada: 2.0% da banca
                       </Text>
                     </div>
                   )}
                 </div>
 
-                <div className="flex flex-col w-full items-center">
+                {/* <div className="flex flex-col w-full items-center">
                   <Text className="text-2xl">Acurácia</Text>
                   <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                     <div
@@ -129,9 +129,9 @@ const DisplayGame = ({
                   <Text>
                     <b>{accuracyLoadingProgress}%</b>
                   </Text>
-                </div>
+                </div> */}
                 <div className="text-center">
-                  <Text>{handleWarningText(accuracyLoadingProgress)}</Text>
+                  <Text>{handleWarningText(game.prob)}</Text>
                 </div>
               </div>
             </section>
