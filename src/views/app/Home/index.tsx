@@ -290,19 +290,6 @@ const HomePage: React.FC = () => {
               </Table.Td>
             </Table.Tr>
             <Table.Tr>
-              <Table.Td align="center" className="">
-                Pelas nossas análises existem boas chances do mercado indicado
-                ser o resultado da partida.
-              </Table.Td>
-              <Table.Td align="center">
-                Temos confiança que o mercado informado será o resultado dessa
-                partida.
-              </Table.Td>
-              <Table.Td align="center">
-                Cuidado, nosso algoritmo não recomenda entrar nessa partida.
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
               <Table.Td align="center">
                 <Text>Vitórias: 3</Text>
                 <Text>Derrotas: 6</Text>
