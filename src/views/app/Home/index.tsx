@@ -58,11 +58,13 @@ const HomePage: React.FC = () => {
     </section>
   ) : (
     <form className="max-w-7xl w-full m-auto mt-5 flex flex-col gap-10">
-      <Confetti
-        recycle={false}
-        width={customWindow.width}
-        height={customWindow.height}
-      />
+      {!isLoading && (
+        <Confetti
+          recycle={false}
+          width={customWindow.width}
+          height={customWindow.height}
+        />
+      )}
 
       {/* CREDIT */}
       <section className="rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-green-400">
