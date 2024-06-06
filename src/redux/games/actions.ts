@@ -1,85 +1,15 @@
-import {
-  GET_GAME,
-  GET_GAME_ERROR,
-  GET_GAME_RATE,
-  GET_GAME_RATE_ERROR,
-  GET_GAME_RATE_SUCCESS,
-  GET_GAME_SUCCESS,
-  GET_IP_ADDRESS,
-  GET_IP_ADDRESS_ERROR,
-  GET_IP_ADDRESS_SUCCESS,
-  GET_LEAGUE_GAME,
-  GET_LEAGUE_GAME_ERROR,
-  GET_LEAGUE_GAME_SUCCESS,
-} from "../actions";
+import { GET_NEXT_GAMES, GET_NEXT_GAMES_SUCCESS } from "../actions";
+import { GetNextGamesSuccess } from "./types";
 
-import {
-  GetGameRequest,
-  GetLeagueGameRequest,
-  GetLeagueGameSuccess,
-  GetGameSuccess,
-  GetIpAddressRequest,
-  GetGameRateRequest,
-  GetGameRateSuccess,
-} from "./types";
-
-export const getIpAddress = () => ({
-  type: GET_IP_ADDRESS,
+export const getNextGames = () => ({
+  type: GET_NEXT_GAMES,
 });
 
-export const getIpAddressSuccess = (payload: GetIpAddressRequest) => ({
-  type: GET_IP_ADDRESS_SUCCESS,
+export const getNextGamesSuccess = (payload: GetNextGamesSuccess[]) => ({
+  type: GET_NEXT_GAMES_SUCCESS,
   payload,
 });
 
-export const getIpAddressError = (payload: unknown) => ({
-  type: GET_IP_ADDRESS_ERROR,
-  payload,
-});
-
-export const getLeagueGame = (payload: GetLeagueGameRequest) => {
-  return {
-    type: GET_LEAGUE_GAME,
-    payload,
-  };
-};
-
-export const getLeagueGameSuccess = (payload: GetLeagueGameSuccess) => ({
-  type: GET_LEAGUE_GAME_SUCCESS,
-  payload,
-});
-
-export const getLeagueGameError = (payload: unknown) => ({
-  type: GET_LEAGUE_GAME_ERROR,
-  payload,
-});
-
-export const getGame = (payload: GetGameRequest) => ({
-  type: GET_GAME,
-  payload,
-});
-
-export const getGameSuccess = (payload: GetGameSuccess) => ({
-  type: GET_GAME_SUCCESS,
-  payload,
-});
-
-export const getGameError = (payload: unknown) => ({
-  type: GET_GAME_ERROR,
-  payload,
-});
-
-export const getGameRate = (payload: GetGameRateRequest) => ({
-  type: GET_GAME_RATE,
-  payload,
-});
-
-export const getGameRateSuccess = (payload: GetGameRateSuccess) => ({
-  type: GET_GAME_RATE_SUCCESS,
-  payload,
-});
-
-export const getGameRateError = (payload: unknown) => ({
-  type: GET_GAME_RATE_ERROR,
-  payload,
+export const getNextGamesError = () => ({
+  type: GET_NEXT_GAMES,
 });
