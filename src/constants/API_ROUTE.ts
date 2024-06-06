@@ -1,8 +1,5 @@
 export const API_ROUTE = {
-  GET_LEAGUE_GAME: "/v2/league?league=leagueId",
-  GET_GAME: "/v2/infogamesGale",
-  GET_GAME_RATE: "/v2/rate",
-  IP_ADDRESS: "https://api.ipify.org/",
+  GET_NEXT_GAMES: "/v2/nextgames",
 
   //? User
   REGISTER_USER: "/v1/register",

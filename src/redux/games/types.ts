@@ -1,36 +1,34 @@
-export type GetIpAddressRequest = {};
-
-export type GetIpAddressSuccess = {
-  ip: string;
-};
-
-export type GetLeagueGameRequest = {
-  leagueId: string;
-};
-
-export type GetLeagueGameSuccess = {
-  games: string[];
-};
-
-export type GetGameRequest = {
-  leagueId: string;
-  game: string;
-};
-
-export type GetGameSuccess = {
+export type GetNextGamesSuccess = {
   bet: string;
-  prob: number;
-  martinGale: 0 | 1;
-  tableData: any[];
-};
-
-export type GetGameRateRequest = {
-  liga: string;
+  gale: boolean;
+  matchTime: string;
   game: string;
+  odd: number;
+  rate: {
+    loss: number;
+    win: number;
+    rateWin: number;
+  };
 };
 
-export type GetGameRateSuccess = {
-  win: number;
+export type NextGamesApiResponse = {
+  bets: string[];
+  gale: any;
+  matchTime: string[];
+  nextGames: string[];
+  odds: number[];
+  rate: Rate[];
+};
+
+type Rate = {
   loss: number;
   rateWin: number;
+  win: number;
+};
+
+type Gale = {
+  galeAmbas: number;
+  galeHome: number;
+  galeOver: number;
+  galeUnder: number;
 };
