@@ -2,22 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { BROWSER_ROUTE } from "../../constants";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import { useDispatch } from "react-redux";
-import { useEffect } from "react";
-import { getIpAddress } from "../../redux/actions";
-
 import "swiper/css";
 import "swiper/css/pagination";
 
 const LandingPage = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const goToHome = () => navigate(BROWSER_ROUTE.LOGIN);
-
-  useEffect(() => {
-    dispatch(getIpAddress());
-  }, [dispatch]);
 
   return (
     <main className="flex flex-col h-screen">

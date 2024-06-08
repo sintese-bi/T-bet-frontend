@@ -108,7 +108,6 @@ const HomePage: React.FC = () => {
                 <Table.Th>Jogo</Table.Th>
                 <Table.Th>Horario</Table.Th>
                 <Table.Th>Mercado</Table.Th>
-                <Table.Th>Odd</Table.Th>
                 <Table.Th>Vitórias</Table.Th>
                 <Table.Th>Derrotas</Table.Th>
                 <Table.Th>Desempenho</Table.Th>
@@ -120,9 +119,6 @@ const HomePage: React.FC = () => {
                   <Table.Td>{game.game}</Table.Td>
                   <Table.Td>{game.matchTime}</Table.Td>
                   <Table.Td>{formatMercadoLabel(game.bet)}</Table.Td>
-                  <Table.Td>
-                    <span className="text-yellow-400">{game.odd}</span>
-                  </Table.Td>
                   <Table.Td>
                     <span className="text-green-400">{game.rate.win}</span>
                   </Table.Td>
