@@ -13,6 +13,9 @@ import { useIsPlanExpired } from "../../../hooks";
 import { BuyPlanModal } from "./components/BuyPlanModal";
 import { getNextGames } from "../../../redux/actions";
 import { formatGameRateStats, formatMercadoLabel } from "../../../helpers";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { separateTeamName } from "../../../helpers/separateTeamName";
+import { getCountryFlag } from "../../../helpers/getCountryFlag";
 
 const HomePage: React.FC = () => {
   const dispatch = useDispatch();
@@ -71,14 +74,17 @@ const HomePage: React.FC = () => {
         <div className="w-full text-center">
           {user.credits > 3 || user.credits === 0 ? (
             <>
-              Por apenas R$ 9,90 você tem acesso ilimitado a plataforma por 30
-              dias, boas apostas!
+              <Text>
+                Por apenas R$ 9,90 você tem acesso ilimitado a plataforma por 30
+                dias, boas apostas!
+              </Text>
+              <Text>Não operar aos finais de semana</Text>
             </>
           ) : (
-            <>
+            <Text>
               Você possui 3 consultas gratuitas, pesquise o jogo de interesse e
               aproveite!
-            </>
+            </Text>
           )}
         </div>
         <div className="flex justify-between items-center w-full gap-4">
@@ -101,39 +107,86 @@ const HomePage: React.FC = () => {
           <Text>Aguarde um momento...</Text>
         </div>
       ) : (
-        <div className="border-2 border-green-500 rounded-lg">
-          <Table>
-            <Table.Thead>
-              <Table.Tr>
-                <Table.Th>Jogo</Table.Th>
-                <Table.Th>Horario</Table.Th>
-                <Table.Th>Mercado</Table.Th>
-                <Table.Th>Vitórias</Table.Th>
-                <Table.Th>Derrotas</Table.Th>
-                <Table.Th>Desempenho</Table.Th>
-              </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>
-              {games.map((game) => (
-                <Table.Tr key={game.game}>
-                  <Table.Td>{game.game}</Table.Td>
-                  <Table.Td>{game.matchTime}</Table.Td>
-                  <Table.Td>{formatMercadoLabel(game.bet)}</Table.Td>
-                  <Table.Td>
-                    <span className="text-green-400">{game.rate.win}</span>
-                  </Table.Td>
-                  <Table.Td>
-                    <span className="text-red-400">{game.rate.loss}</span>
-                  </Table.Td>
-                  <Table.Td>
-                    <span className="text-blue-400">
-                      {formatGameRateStats(game.rate.rateWin)}
-                    </span>
-                  </Table.Td>
-                </Table.Tr>
-              ))}
-            </Table.Tbody>
-          </Table>
+        <div className="flex flex-col gap-4 max-w-4xl w-full mx-auto py-5 px-3 my-5">
+          {games.map((game) => (
+            <div className="border-2 border-green-500 rounded-lg ">
+              <div className="flex justify-between items-center p-3">
+                <div className="flex flex-col justify-center items-center p-4">
+                  <img
+                    src={`https://media.api-sports.io/flags/${getCountryFlag(separateTeamName(game.game))}.svg`}
+                    alt=""
+                    className="w-52"
+                  />
+                  <Text>{separateTeamName(game.game)}</Text>
+                </div>
+                <div className="flex flex-col items-center">
+                  <Text>VS</Text>
+                  <Text>Hoje às {game.matchTime}</Text>
+                </div>
+                <div className="flex flex-col justify-center items-center p-4">
+                  <img
+                    src={`https://media.api-sports.io/flags/${getCountryFlag(separateTeamName(game.game, 1))}.svg`}
+                    alt=""
+                    className="w-52"
+                  />
+                  <Text>{separateTeamName(game.game, 1)}</Text>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2 items-center my-4">
+                <Text>Resultado final</Text>
+                <Text className="text-2xl">
+                  {formatMercadoLabel(game.bet)}{" "}
+                  <span className="text-green-500">{game.odd}</span>{" "}
+                </Text>
+              </div>
+              {game.gale && (
+                <div className="flex flex-col justify-between p-3">
+                  <Text className="text-bold">
+                    Com <span className="text-green-500">3 gales</span>
+                  </Text>
+                  <div className="flex justify-between">
+                    <Text className="p-2 bg-green-500 rounded-lg">
+                      1º gale: 0.5% da banca
+                    </Text>
+                    <Text>2º gale: 1.0% da banca</Text>
+                    <Text>3º gale: 2.0% da banca</Text>
+                  </div>
+                </div>
+              )}
+              <div className="p-4">
+                <Table>
+                  <Table.Thead>
+                    <Table.Tr>
+                      <Table.Th>Jogo</Table.Th>
+                      <Table.Th>Horario</Table.Th>
+                      <Table.Th>Mercado</Table.Th>
+                      <Table.Th>Vitórias</Table.Th>
+                      <Table.Th>Derrotas</Table.Th>
+                      <Table.Th>Desempenho</Table.Th>
+                    </Table.Tr>
+                  </Table.Thead>
+                  <Table.Tbody>
+                    <Table.Tr key={game.game}>
+                      <Table.Td>{game.game}</Table.Td>
+                      <Table.Td>{game.matchTime}</Table.Td>
+                      <Table.Td>{formatMercadoLabel(game.bet)}</Table.Td>
+                      <Table.Td>
+                        <span className="text-green-400">{game.rate.win}</span>
+                      </Table.Td>
+                      <Table.Td>
+                        <span className="text-red-400">{game.rate.loss}</span>
+                      </Table.Td>
+                      <Table.Td>
+                        <span className="text-blue-400">
+                          {formatGameRateStats(game.rate.rateWin)}
+                        </span>
+                      </Table.Td>
+                    </Table.Tr>
+                  </Table.Tbody>
+                </Table>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 
