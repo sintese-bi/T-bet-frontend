@@ -10,7 +10,7 @@ export function formatMercadoLabel(gameStats: string): string {
       return "MENOS DE 2.5";
     case "vis":
       return "VISITANTE";
-    case "ambasMarcam":
+    case "ambas":
       return "AMBAS MARCAM";
     default:
       return "";

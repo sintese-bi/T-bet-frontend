@@ -86,6 +86,7 @@ export const COUNTRIES_CODES = {
   "Ilhas Salomão": "SB",
   Índia: "IN",
   Indonésia: "ID",
+  Inglaterra: "GB",
   Irã: "IR",
   Iraque: "IQ",
   Irlanda: "IE",

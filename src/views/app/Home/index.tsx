@@ -13,7 +13,6 @@ import { useIsPlanExpired } from "../../../hooks";
 import { BuyPlanModal } from "./components/BuyPlanModal";
 import { getNextGames } from "../../../redux/actions";
 import { formatGameRateStats, formatMercadoLabel } from "../../../helpers";
-import { Swiper, SwiperSlide } from "swiper/react";
 import { separateTeamName } from "../../../helpers/separateTeamName";
 import { getCountryFlag } from "../../../helpers/getCountryFlag";
 
@@ -111,11 +110,11 @@ const HomePage: React.FC = () => {
           {games.map((game) => (
             <div className="border-2 border-green-500 rounded-lg ">
               <div className="flex justify-between items-center p-3">
-                <div className="flex flex-col justify-center items-center p-4">
+                <div className="flex flex-col justify-center items-center p-4 ">
                   <img
                     src={`https://media.api-sports.io/flags/${getCountryFlag(separateTeamName(game.game))}.svg`}
-                    alt=""
-                    className="w-52"
+                    alt={separateTeamName(game.game)}
+                    className="w-52 border-2 border-slate-700"
                   />
                   <Text>{separateTeamName(game.game)}</Text>
                 </div>
@@ -126,20 +125,24 @@ const HomePage: React.FC = () => {
                 <div className="flex flex-col justify-center items-center p-4">
                   <img
                     src={`https://media.api-sports.io/flags/${getCountryFlag(separateTeamName(game.game, 1))}.svg`}
-                    alt=""
-                    className="w-52"
+                    alt={separateTeamName(game.game, 1)}
+                    className="w-52 border-2 border-slate-700"
                   />
                   <Text>{separateTeamName(game.game, 1)}</Text>
                 </div>
               </div>
+
               <div className="flex flex-col gap-2 items-center my-4">
                 <Text>Resultado final</Text>
                 <Text className="text-2xl">
                   {formatMercadoLabel(game.bet)}{" "}
-                  <span className="text-green-500">{game.odd}</span>{" "}
+                  {game.odd.toString() !== "-" && (
+                    <span className="text-green-500">{game.odd}</span>
+                  )}
                 </Text>
               </div>
-              {game.gale && (
+
+              {/* {game.gale && (
                 <div className="flex flex-col justify-between p-3">
                   <Text className="text-bold">
                     Com <span className="text-green-500">3 gales</span>
@@ -152,7 +155,7 @@ const HomePage: React.FC = () => {
                     <Text>3º gale: 2.0% da banca</Text>
                   </div>
                 </div>
-              )}
+              )} */}
               <div className="p-4">
                 <Table>
                   <Table.Thead>
