@@ -136,9 +136,9 @@ const HomePage: React.FC = () => {
                 <Text>Resultado final</Text>
                 <Text className="text-2xl">
                   {formatMercadoLabel(game.bet)}{" "}
-                  {game.odd.toString() !== "-" && (
+                  {/* {game.odd.toString() !== "-" && (
                     <span className="text-green-500">{game.odd}</span>
-                  )}
+                  )} */}
                 </Text>
               </div>
 
