@@ -109,7 +109,7 @@ const HomePage: React.FC = () => {
         <div className="flex flex-col gap-4 max-w-4xl w-full mx-auto py-5 px-3 my-5">
           {games.map((game) => (
             <div className="border-2 border-green-500 rounded-lg ">
-              <div className="flex justify-between items-center p-3">
+              <div className="flex flex-wrap lg:justify-between justify-center items-center p-3">
                 <div className="flex flex-col justify-center items-center p-4 ">
                   <img
                     src={`https://media.api-sports.io/flags/${getCountryFlag(separateTeamName(game.game))}.svg`}
@@ -156,12 +156,10 @@ const HomePage: React.FC = () => {
                   </div>
                 </div>
               )} */}
-              <div className="p-4">
+              <div className="p-4 w-full overflow-x-scroll">
                 <Table>
                   <Table.Thead>
                     <Table.Tr>
-                      <Table.Th>Jogo</Table.Th>
-                      <Table.Th>Horario</Table.Th>
                       <Table.Th>Mercado</Table.Th>
                       <Table.Th>Vitórias</Table.Th>
                       <Table.Th>Derrotas</Table.Th>
@@ -170,8 +168,6 @@ const HomePage: React.FC = () => {
                   </Table.Thead>
                   <Table.Tbody>
                     <Table.Tr key={game.game}>
-                      <Table.Td>{game.game}</Table.Td>
-                      <Table.Td>{game.matchTime}</Table.Td>
                       <Table.Td>{formatMercadoLabel(game.bet)}</Table.Td>
                       <Table.Td>
                         <span className="text-green-400">{game.rate.win}</span>
