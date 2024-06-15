@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Confetti from "react-confetti";
 import { MoonLoader, RingLoader } from "react-spinners";
 import { Table, Text } from "@mantine/core";
@@ -16,11 +16,11 @@ import { formatGameRateStats, formatMercadoLabel } from "../../../helpers";
 import { separateTeamName } from "../../../helpers/separateTeamName";
 import { getCountryFlag } from "../../../helpers/getCountryFlag";
 import { getBotWarningText } from "../../../helpers/getBotWarningText";
-import Loading from "../../../components/Loading";
 
 const HomePage: React.FC = () => {
   const dispatch = useDispatch();
   const isUserPlanExpired = useIsPlanExpired();
+  const [isScreenUpdated, setScreenUpdated] = useState(false);
   const { user, isUserLoading } = useSelector(
     (state: DefaultState) => state.auth
   );
@@ -65,7 +65,7 @@ const HomePage: React.FC = () => {
       const BRTDate = new Date(
         now.getFullYear(),
         now.getMonth(),
-        now.getDate(),
+        now.getDate() + 1,
         parseInt(hours, 10),
         parseInt(minutes, 10),
         0
@@ -78,12 +78,12 @@ const HomePage: React.FC = () => {
     }
 
     const refreshTime = convertESTtoBRT(games[games.length - 1].matchTime);
+    refreshTime.setMinutes(refreshTime.getMinutes() + 3);
 
     function refreshPage() {
       const now = new Date();
-      if (now.getTime() === refreshTime.getTime()) {
+      if (now.getTime() >= refreshTime.getTime()) {
         window.location.reload();
-        return;
       } else {
         setTimeout(refreshPage, 1000); // Check every second
       }
