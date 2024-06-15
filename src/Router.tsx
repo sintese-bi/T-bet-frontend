@@ -35,6 +35,7 @@ function Router() {
             <Route path="" element={<Navigate to={BROWSER_ROUTE.HOME} />} />
             <Route path={BROWSER_ROUTE.HOME} element={<HomePage />} />
           </Route>
+
           <Route path="/auth" element={<AuthLayout />}>
             <Route path={BROWSER_ROUTE.LOGIN} element={<LoginPage />} />
             <Route path={BROWSER_ROUTE.REGISTER} element={<RegisterPage />} />

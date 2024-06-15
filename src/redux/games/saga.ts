@@ -1,128 +1,54 @@
+import { all, call, fork, put, takeLeading } from "redux-saga/effects";
 import {
-  all,
-  call,
-  fork,
-  put,
-  takeEvery,
-  takeLatest,
-} from "redux-saga/effects";
-import {
-  GET_GAME,
-  GET_GAME_RATE,
-  GET_IP_ADDRESS,
-  GET_LEAGUE_GAME,
-  getGameError,
-  getGameRateError,
-  getGameRateSuccess,
-  getGameSuccess,
-  getIpAddressError,
-  getIpAddressSuccess,
-  getLeagueGameError,
-  getLeagueGameSuccess,
+  GET_NEXT_GAMES,
+  getNextGamesError,
+  getNextGamesSuccess,
 } from "../actions";
-import {
-  GetGameRateRequest,
-  GetGameRequest,
-  GetGameSuccess,
-  GetLeagueGameRequest,
-} from "./types";
-import { api } from "../../services";
-import axios from "axios";
+import { gameAPI } from "../../services/api";
+import { GetNextGamesSuccess, NextGamesApiResponse } from "./types";
 import { API_ROUTE } from "../../constants";
 
-function* fetchIpAddress(): Generator {
+function* getNextGames(): Generator {
   try {
-    const response = yield call(axios.get, API_ROUTE.IP_ADDRESS);
+    const getNextGamesAPI = () => gameAPI.get(API_ROUTE.GET_NEXT_GAMES);
 
-    const { data } = response as { data: string };
+    const response = yield call(getNextGamesAPI);
 
-    yield put(getIpAddressSuccess({ ip: data }));
-  } catch (error) {
-    console.error(error);
-    yield put(getIpAddressError({ error }));
-  }
-}
+    const { data } = response as { data: NextGamesApiResponse };
 
-type GetLeagueGameProps = {
-  type: string;
-  payload: GetLeagueGameRequest;
-};
+    const getGaleIndex = (gale: string) => {
+      const galeIndex = {
+        home: "galeHome",
+        vis: "galeVis",
+        under25: "galeUnder",
+        over25: "galeOver",
+        over35: "galeOver",
+        ambasMarcam: "galeAmbas",
+      };
 
-function* fetchLeagueGames({ payload }: GetLeagueGameProps): Generator {
-  const { leagueId } = payload;
-
-  try {
-    const response = yield call(
-      api.get,
-      API_ROUTE.GET_LEAGUE_GAME.replace("leagueId", leagueId)
-    );
-    const {
-      data: { games },
-    } = response as { data: { games: string[] } };
-
-    yield put(getLeagueGameSuccess({ games }));
-  } catch (error) {
-    console.error(error);
-    yield put(getLeagueGameError({ error }));
-  }
-}
-
-type GetGameProps = {
-  type: string;
-  payload: GetGameRequest;
-};
-
-function* fetchGame({ payload }: GetGameProps): Generator {
-  const { leagueId, game } = payload;
-
-  try {
-    const response = yield call(api.post, API_ROUTE.GET_GAME, {
-      liga: leagueId,
-      game,
-    });
-
-    const { data } = response as { data: GetGameSuccess };
-
-    yield put(getGameSuccess({ ...data }));
-  } catch (error) {
-    console.error(error);
-    yield put(getGameError({ error }));
-  }
-}
-
-type GetGameRateProps = {
-  type: string;
-  payload: GetGameRateRequest;
-};
-
-function* fetchGameRate({ payload }: GetGameRateProps): Generator {
-  const { liga, game } = payload;
-
-  try {
-    const response = yield call(api.post, API_ROUTE.GET_GAME_RATE, {
-      liga,
-      game,
-    });
-    const { data } = response as {
-      data: { loss: number; win: number; rateWin: number };
+      return galeIndex[gale as keyof typeof galeIndex];
     };
 
-    yield put(
-      getGameRateSuccess({
-        ...data,
+    const formattedData: GetNextGamesSuccess[] = data.nextGames.map(
+      (game, index) => ({
+        bet: data.bets[index],
+        gale: data.gale[getGaleIndex(data.bets[index])] === 1,
+        matchTime: data.matchTime[index],
+        game,
+        odd: data.odds[index],
+        rate: data.rate[index],
+        isValid: data.rate[index].show === 1,
       })
     );
+
+    yield put(getNextGamesSuccess(formattedData));
   } catch (error) {
-    console.error(error);
-    yield put(getGameRateError({ error }));
+    yield put(getNextGamesError());
   }
 }
 
 function* watchGetAuth() {
-  yield takeLatest(GET_IP_ADDRESS, fetchIpAddress);
-  yield takeLatest(GET_LEAGUE_GAME, fetchLeagueGames);
-  yield takeEvery(GET_GAME, fetchGame);
-  yield takeEvery(GET_GAME_RATE, fetchGameRate);
+  yield takeLeading(GET_NEXT_GAMES, getNextGames);
 }
 
 export default function* rootSaga() {

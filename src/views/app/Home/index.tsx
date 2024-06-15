@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { Button, Select, Table } from "@mantine/core";
+import React, { useEffect } from "react";
+import Confetti from "react-confetti";
+import { MoonLoader, RingLoader } from "react-spinners";
+import { Table, Text } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { useDispatch, useSelector } from "react-redux";
-import { useForm, Controller } from "react-hook-form";
-import { getGame, getGameRate, getLeagueGame } from "../../../redux/actions";
 import { DefaultState } from "../../../redux/reducers";
-import { LEAGUE } from "../../../constants";
 import { Notify } from "../../../utils";
 
-import Confetti from "react-confetti";
 import { useGetWindow } from "../../../hooks/useGetWindow";
-import { getUser, updateUser } from "../../../redux/user/actions";
-import DisplayGame from "./components/DisplayGame";
-import { RingLoader } from "react-spinners";
-import { formatGameRateStats } from "../../../helpers";
+import { getUser } from "../../../redux/user/actions";
 import { useIsPlanExpired } from "../../../hooks";
-import { useDisclosure } from "@mantine/hooks";
 import { BuyPlanModal } from "./components/BuyPlanModal";
+import { getNextGames } from "../../../redux/actions";
+import { formatGameRateStats, formatMercadoLabel } from "../../../helpers";
+import { separateTeamName } from "../../../helpers/separateTeamName";
+import { getCountryFlag } from "../../../helpers/getCountryFlag";
+import { getBotWarningText } from "../../../helpers/getBotWarningText";
+import Loading from "../../../components/Loading";
 
 const HomePage: React.FC = () => {
   const dispatch = useDispatch();
@@ -23,70 +24,17 @@ const HomePage: React.FC = () => {
   const { user, isUserLoading } = useSelector(
     (state: DefaultState) => state.auth
   );
-  const { games, isLoadingGames, isGameRateLoading, gameRate, game } =
-    useSelector((state: DefaultState) => state.games);
 
-  const { control, watch, handleSubmit } = useForm({
-    defaultValues: {
-      league: LEAGUE.EURO,
-      game: "",
-    },
-  });
+  const { games, isLoading } = useSelector(
+    (state: DefaultState) => state.games
+  );
 
-  const [accuracyLoadingProgress, setAccuracyLoadingProgress] = useState(0);
-  const [dispatchedGame, setDispatchedGame] = useState("");
   const customWindow = useGetWindow();
 
   const [isBuyModalOpen, { close: closeBuyModal, open: openBuyModal }] =
     useDisclosure(false);
   const handleCloseBuyModal = () => closeBuyModal();
   const handleOpenBuyModal = () => openBuyModal();
-
-  const selectedLeague = watch("league");
-  const selectedGame = watch("game");
-  const isLoadingGameRate = isGameRateLoading || isLoadingGames;
-  const canShowGameRate = game.bet !== "";
-
-  const handleBlockGameSearch = () =>
-    user.credits === 0 || isUserPlanExpired || isLoadingGames;
-  const handleResetDispatchedGame = () => setDispatchedGame("");
-  const onSubmit = () => {
-    if (handleBlockGameSearch()) {
-      Notify({
-        message: "Você atingiu o limite de consultas.",
-        type: "error",
-      });
-      return;
-    }
-
-    if (game.prob === 0) {
-      setAccuracyLoadingProgress(0);
-      setDispatchedGame(selectedGame);
-      return;
-    }
-
-    setAccuracyLoadingProgress(0);
-    setDispatchedGame(selectedGame);
-    dispatch(getGame({ leagueId: selectedLeague, game: selectedGame }));
-    dispatch(updateUser({ email: user.email, credits: user.credits - 1 }));
-  };
-
-  // GET LEAGUE EFFECT
-  useEffect(() => {
-    dispatch(getLeagueGame({ leagueId: selectedLeague }));
-  }, [dispatch, selectedLeague]);
-
-  // GET GAME EFFECT
-  useEffect(() => {
-    if (!selectedLeague || !selectedGame) return;
-    dispatch(getGame({ leagueId: selectedLeague, game: selectedGame }));
-  }, [dispatch, selectedLeague, selectedGame]);
-
-  // GET GAME RATE EFFECT
-  useEffect(() => {
-    if (!selectedLeague || !selectedGame) return;
-    dispatch(getGameRate({ liga: selectedLeague, game: selectedGame }));
-  }, [selectedLeague, selectedGame, dispatch]);
 
   // GET USER EFFECT
   useEffect(() => {
@@ -104,31 +52,75 @@ const HomePage: React.FC = () => {
     }
   }, []);
 
+  useEffect(() => {
+    dispatch(getNextGames());
+  }, []);
+
+  useEffect(() => {
+    if (!games.length) return;
+
+    function convertESTtoBRT(ESTTime: string) {
+      const [hours, minutes] = ESTTime.split(":");
+      const now = new Date();
+      const BRTDate = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        parseInt(hours, 10),
+        parseInt(minutes, 10),
+        0
+      );
+
+      // Adjust for BRT timezone (UTC-3)
+      BRTDate.setHours(BRTDate.getHours() - 4);
+
+      return BRTDate;
+    }
+
+    const refreshTime = convertESTtoBRT(games[games.length - 1].matchTime);
+
+    function refreshPage() {
+      const now = new Date();
+      if (now.getTime() === refreshTime.getTime()) {
+        window.location.reload();
+        return;
+      } else {
+        setTimeout(refreshPage, 1000); // Check every second
+      }
+    }
+
+    refreshPage();
+  }, [games]);
+
   return isUserLoading ? (
     <section className="flex justify-center items-center h-full">
       <RingLoader color="#ffbf69" />
     </section>
   ) : (
     <form className="max-w-7xl w-full m-auto mt-5 flex flex-col gap-10">
-      <Confetti
-        recycle={false}
-        width={customWindow.width}
-        height={customWindow.height}
-      />
+      {!isLoading && (
+        <Confetti
+          recycle={false}
+          width={customWindow.width}
+          height={customWindow.height}
+        />
+      )}
 
       {/* CREDIT */}
-      <section className="text-white rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-yellow-400">
+      <section className="rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-green-400">
         <div className="w-full text-center">
           {user.credits > 3 || user.credits === 0 ? (
             <>
-              Por apenas R$ 9,90 você tem acesso ilimitado a plataforma por 30
-              dias, boas apostas!
+              <Text>
+                Por apenas R$ 9,90 você tem acesso ilimitado a plataforma por 30
+                dias, boas apostas!
+              </Text>
             </>
           ) : (
-            <>
+            <Text>
               Você possui 3 consultas gratuitas, pesquise o jogo de interesse e
               aproveite!
-            </>
+            </Text>
           )}
         </div>
         <div className="flex justify-between items-center w-full gap-4">
@@ -142,109 +134,117 @@ const HomePage: React.FC = () => {
         </div>
       </section>
 
-      {/* SELECTORS */}
-      <form className="flex flex-wrap items-end justify-center gap-10 md:gap-52 lg:flex-nowrap border-2 border-yellow-400 rounded-2xl p-4">
-        <div className="w-full">
-          <h1 className="text-2xl font-bold text-center lg:text-left">
-            Selecione a liga
-          </h1>
-          <Controller
-            name="league"
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                placeholder="Selecionar liga"
-                data={[LEAGUE.EURO]}
-                onChange={(value) => field.onChange(value)}
-              />
-            )}
-          />
-        </div>
-        <div className="w-full">
-          <h1 className="text-2xl font-bold text-center lg:text-left">
-            Selecione o jogo
-          </h1>
-          <Controller
-            name="game"
-            control={control}
-            render={({ field }) => (
-              <Select
-                {...field}
-                placeholder="Selecionar jogo"
-                data={games.map((game) => game)}
-                onChange={(value) => {
-                  handleResetDispatchedGame();
-                  field.onChange(value);
-                }}
-                nothingFoundMessage="O nome dos times deve ser igual a como aparece na bet."
-                searchable
-                disabled={handleBlockGameSearch()}
-              />
-            )}
-          />
-        </div>
-        {selectedGame && (
-          <Button
-            onClick={handleSubmit(onSubmit)}
-            type="submit"
-            bg={"green"}
-            className="w-full bg-green-400 lg:justify-center"
-            disabled={handleBlockGameSearch()}
-          >
-            Pesquisar
-          </Button>
-        )}
-      </form>
+      {/* INFORMATION */}
+      <section className="rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-green-400">
+        <Text className="w-full text-center">
+          O sistema mostra 3 jogos por vez. A atualização dos próximos 3 jogos é
+          automática. Os jogos sempre são atualizados em tempo suficiente para
+          fazer as entradas.
+        </Text>
+      </section>
 
-      {/* GAME INFO */}
-      <DisplayGame
-        selectedGame={dispatchedGame}
-        accuracyLoadingProgress={accuracyLoadingProgress}
-        setAccuracyLoadingProgress={setAccuracyLoadingProgress}
-      />
-
-      {/* TABLE STATS */}
-      {isLoadingGameRate ? (
-        <section
-          className={`max-w-lg w-full bg-[#232323] p-8 rounded-2xl gap-14 self-center border-2 border-yellow-400`}
-        >
-          <div className="self-center flex flex-col items-center">
-            <RingLoader color="#ffbf69" />
-          </div>
-        </section>
+      {/* GAME STATS */}
+      {isLoading ? (
+        <div className="flex flex-col justify-center items-center">
+          <MoonLoader color="#ffbf69" />
+        </div>
       ) : (
-        <>
-          {canShowGameRate && (
-            <section className="border-2 border-yellow-400 rounded-2xl p-4">
-              <h1 className="text-xl font-bold text-center">
-                Assertividade do sistema
-              </h1>
-              <Table>
-                <Table.Thead>
-                  <Table.Tr>
-                    <Table.Th className="text-center">Vitorias</Table.Th>
-                    <Table.Th className="text-center">Derrotas</Table.Th>
-                    <Table.Th className="text-center">Desempenho</Table.Th>
-                  </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>
-                  <Table.Tr>
-                    <Table.Td align="center" className="text-green-400">
-                      {gameRate.win}
-                    </Table.Td>
-                    <Table.Td align="center" className="text-red-500">
-                      {gameRate.loss}
-                    </Table.Td>
-                    <Table.Td align="center" className="text-blue-500">
-                      {formatGameRateStats(gameRate.rateWin)}
-                    </Table.Td>
-                  </Table.Tr>
-                </Table.Tbody>
-              </Table>
-            </section>
-          )}
-        </>
+        <div className="flex flex-col gap-4 max-w-4xl w-full mx-auto py-5 px-3 my-5">
+          {games.map((game) => (
+            <div className="border-2 border-green-500 rounded-lg ">
+              <div className="flex flex-wrap lg:justify-between justify-center items-center p-3">
+                <div className="flex flex-col justify-center items-center p-4 ">
+                  <img
+                    src={`https://media.api-sports.io/flags/${getCountryFlag(separateTeamName(game.game))}.svg`}
+                    alt={separateTeamName(game.game)}
+                    className="w-52 border-2 border-slate-700"
+                  />
+                  <Text>{separateTeamName(game.game)}</Text>
+                </div>
+                <div className="flex flex-col items-center">
+                  <Text>VS</Text>
+                  <Text>Hoje às {game.matchTime}</Text>
+                </div>
+                <div className="flex flex-col justify-center items-center p-4">
+                  <img
+                    src={`https://media.api-sports.io/flags/${getCountryFlag(separateTeamName(game.game, 1))}.svg`}
+                    alt={separateTeamName(game.game, 1)}
+                    className="w-52 border-2 border-slate-700"
+                  />
+                  <Text>{separateTeamName(game.game, 1)}</Text>
+                </div>
+              </div>
+
+              {game.isValid ? (
+                <>
+                  <div className="flex flex-col gap-2 items-center my-4">
+                    <Text>Resultado final</Text>
+                    <Text className="text-2xl">
+                      {formatMercadoLabel(game.bet)}{" "}
+                      {/* {game.odd.toString() !== "-" && (
+                        <span className="text-green-500">{game.odd}</span>
+                      )} */}
+                    </Text>
+                    <Text className="text-center">
+                      {getBotWarningText(game.rate.rateWin)}
+                    </Text>
+                  </div>
+
+                  {/* {game.gale && (
+                <div className="flex flex-col justify-between p-3">
+                  <Text className="text-bold">
+                    Com <span className="text-green-500">3 gales</span>
+                  </Text>
+                  <div className="flex justify-between">
+                    <Text className="p-2 bg-green-500 rounded-lg">
+                      1º gale: 0.5% da banca
+                    </Text>
+                    <Text>2º gale: 1.0% da banca</Text>
+                    <Text>3º gale: 2.0% da banca</Text>
+                  </div>
+                </div>
+              )} */}
+                  <div className="p-4 w-full overflow-x-scroll">
+                    <Table>
+                      <Table.Thead>
+                        <Table.Tr>
+                          <Table.Th>Mercado</Table.Th>
+                          <Table.Th>Vitórias</Table.Th>
+                          <Table.Th>Derrotas</Table.Th>
+                          <Table.Th>Desempenho</Table.Th>
+                        </Table.Tr>
+                      </Table.Thead>
+                      <Table.Tbody>
+                        <Table.Tr key={game.game}>
+                          <Table.Td>{formatMercadoLabel(game.bet)}</Table.Td>
+                          <Table.Td>
+                            <span className="text-green-400">
+                              {game.rate.win}
+                            </span>
+                          </Table.Td>
+                          <Table.Td>
+                            <span className="text-red-400">
+                              {game.rate.loss}
+                            </span>
+                          </Table.Td>
+                          <Table.Td>
+                            <span className="text-blue-400">
+                              {formatGameRateStats(game.rate.rateWin)}
+                            </span>
+                          </Table.Td>
+                        </Table.Tr>
+                      </Table.Tbody>
+                    </Table>
+                  </div>
+                </>
+              ) : (
+                <Text className="text-center">
+                  Nosso algoritimo não recomenda entrar nesta partida
+                </Text>
+              )}
+            </div>
+          ))}
+        </div>
       )}
 
       <BuyPlanModal isOpen={isBuyModalOpen} onClose={handleCloseBuyModal} />
