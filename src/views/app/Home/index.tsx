@@ -15,6 +15,7 @@ import { getNextGames } from "../../../redux/actions";
 import { formatGameRateStats, formatMercadoLabel } from "../../../helpers";
 import { separateTeamName } from "../../../helpers/separateTeamName";
 import { getCountryFlag } from "../../../helpers/getCountryFlag";
+import { getBotWarningText } from "../../../helpers/getBotWarningText";
 
 const HomePage: React.FC = () => {
   const dispatch = useDispatch();
@@ -54,6 +55,44 @@ const HomePage: React.FC = () => {
     dispatch(getNextGames());
   }, []);
 
+  useEffect(() => {
+    if (!games.length) return;
+
+    function convertESTtoBRT(ESTTime: string) {
+      const [hours, minutes] = ESTTime.split(":");
+      const now = new Date();
+      const BRTDate = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        parseInt(hours, 10),
+        parseInt(minutes, 10),
+        0
+      );
+
+      // Adjust for BRT timezone (UTC-3)
+      BRTDate.setHours(BRTDate.getHours() - 4);
+
+      return BRTDate;
+    }
+
+    const refreshTime = convertESTtoBRT(games[games.length - 1].matchTime);
+
+    console.log("refreshTime", refreshTime);
+
+    function refreshPage() {
+      const now = new Date();
+      if (now.getTime() === refreshTime.getTime()) {
+        window.location.reload();
+        return;
+      } else {
+        setTimeout(refreshPage, 1000); // Check every second
+      }
+    }
+
+    refreshPage();
+  }, [games]);
+
   return isUserLoading ? (
     <section className="flex justify-center items-center h-full">
       <RingLoader color="#ffbf69" />
@@ -77,7 +116,6 @@ const HomePage: React.FC = () => {
                 Por apenas R$ 9,90 você tem acesso ilimitado a plataforma por 30
                 dias, boas apostas!
               </Text>
-              <Text>Não operar aos finais de semana</Text>
             </>
           ) : (
             <Text>
@@ -95,6 +133,15 @@ const HomePage: React.FC = () => {
             Comprar
           </a>
         </div>
+      </section>
+
+      {/* INFORMATION */}
+      <section className="rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-green-400">
+        <Text className="w-full text-center">
+          O sistema mostra 3 jogos por vez. A atualização dos próximos 3 jogos é
+          automática. Os jogos sempre são atualizados em tempo suficiente para
+          fazer as entradas.
+        </Text>
       </section>
 
       {/* GAME STATS */}
@@ -132,17 +179,20 @@ const HomePage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-2 items-center my-4">
-                <Text>Resultado final</Text>
-                <Text className="text-2xl">
-                  {formatMercadoLabel(game.bet)}{" "}
-                  {/* {game.odd.toString() !== "-" && (
+              {game.isValid ? (
+                <>
+                  <div className="flex flex-col gap-2 items-center my-4">
+                    <Text>Resultado final</Text>
+                    <Text className="text-2xl">
+                      {formatMercadoLabel(game.bet)}{" "}
+                      {/* {game.odd.toString() !== "-" && (
                     <span className="text-green-500">{game.odd}</span>
                   )} */}
-                </Text>
-              </div>
+                    </Text>
+                    <Text>{getBotWarningText(game.rate.rateWin)}</Text>
+                  </div>
 
-              {/* {game.gale && (
+                  {/* {game.gale && (
                 <div className="flex flex-col justify-between p-3">
                   <Text className="text-bold">
                     Com <span className="text-green-500">3 gales</span>
@@ -156,34 +206,44 @@ const HomePage: React.FC = () => {
                   </div>
                 </div>
               )} */}
-              <div className="p-4 w-full overflow-x-scroll">
-                <Table>
-                  <Table.Thead>
-                    <Table.Tr>
-                      <Table.Th>Mercado</Table.Th>
-                      <Table.Th>Vitórias</Table.Th>
-                      <Table.Th>Derrotas</Table.Th>
-                      <Table.Th>Desempenho</Table.Th>
-                    </Table.Tr>
-                  </Table.Thead>
-                  <Table.Tbody>
-                    <Table.Tr key={game.game}>
-                      <Table.Td>{formatMercadoLabel(game.bet)}</Table.Td>
-                      <Table.Td>
-                        <span className="text-green-400">{game.rate.win}</span>
-                      </Table.Td>
-                      <Table.Td>
-                        <span className="text-red-400">{game.rate.loss}</span>
-                      </Table.Td>
-                      <Table.Td>
-                        <span className="text-blue-400">
-                          {formatGameRateStats(game.rate.rateWin)}
-                        </span>
-                      </Table.Td>
-                    </Table.Tr>
-                  </Table.Tbody>
-                </Table>
-              </div>
+                  <div className="p-4 w-full overflow-x-scroll">
+                    <Table>
+                      <Table.Thead>
+                        <Table.Tr>
+                          <Table.Th>Mercado</Table.Th>
+                          <Table.Th>Vitórias</Table.Th>
+                          <Table.Th>Derrotas</Table.Th>
+                          <Table.Th>Desempenho</Table.Th>
+                        </Table.Tr>
+                      </Table.Thead>
+                      <Table.Tbody>
+                        <Table.Tr key={game.game}>
+                          <Table.Td>{formatMercadoLabel(game.bet)}</Table.Td>
+                          <Table.Td>
+                            <span className="text-green-400">
+                              {game.rate.win}
+                            </span>
+                          </Table.Td>
+                          <Table.Td>
+                            <span className="text-red-400">
+                              {game.rate.loss}
+                            </span>
+                          </Table.Td>
+                          <Table.Td>
+                            <span className="text-blue-400">
+                              {formatGameRateStats(game.rate.rateWin)}
+                            </span>
+                          </Table.Td>
+                        </Table.Tr>
+                      </Table.Tbody>
+                    </Table>
+                  </div>
+                </>
+              ) : (
+                <Text className="text-center">
+                  Nosso algoritimo não recomenda entrar nesta partida
+                </Text>
+              )}
             </div>
           ))}
         </div>

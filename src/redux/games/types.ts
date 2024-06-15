@@ -9,6 +9,7 @@ export type GetNextGamesSuccess = {
     win: number;
     rateWin: number;
   };
+  isValid: boolean;
 };
 
 export type NextGamesApiResponse = {
@@ -24,6 +25,7 @@ type Rate = {
   loss: number;
   rateWin: number;
   win: number;
+  show: 0 | 1;
 };
 
 type Gale = {

@@ -5,11 +5,14 @@ import { useDispatch } from "react-redux";
 import { loggoutUser } from "../../../redux/user/actions";
 import { useEffect } from "react";
 import { useSessionCheck } from "../../../hooks";
+import { useDisclosure } from "@mantine/hooks";
 
 const AppLayout = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [isLightTheme, { toggle: toogleLightTheme }] = useDisclosure(false);
 
   const isHomePage = location.pathname === BROWSER_ROUTE.HOME;
 
@@ -26,10 +29,21 @@ const AppLayout = () => {
   }, [isTokenValid, navigate]);
 
   return (
-    <main className="flex flex-col px-4 lg:px-12 bg-black text-white h-full">
+    <main
+      className={`flex flex-col px-4 lg:px-12 ${isLightTheme ? "bg-white text-black" : "bg-black text-white"}`}
+    >
       <header className="flex justify-center py-4">
         <img className="w-24" src={"/logo-bet.png"} alt="Tbet logo" />
       </header>
+      <div className="self-center">
+        <Button
+          onClick={toogleLightTheme}
+          className="bg-green-500 p-2 rounded-md text-white text-center w-full cursor-pointer"
+          color="green"
+        >
+          Mudar tema
+        </Button>
+      </div>
       <section className="flex-1">
         <Outlet />
       </section>

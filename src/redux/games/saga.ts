@@ -37,6 +37,7 @@ function* getNextGames(): Generator {
         game,
         odd: data.odds[index],
         rate: data.rate[index],
+        isValid: data.rate[index].show === 1,
       })
     );
 
