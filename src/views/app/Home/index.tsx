@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import Confetti from "react-confetti";
-import { RingLoader } from "react-spinners";
+import { MoonLoader, RingLoader } from "react-spinners";
 import { Table, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,6 +16,7 @@ import { formatGameRateStats, formatMercadoLabel } from "../../../helpers";
 import { separateTeamName } from "../../../helpers/separateTeamName";
 import { getCountryFlag } from "../../../helpers/getCountryFlag";
 import { getBotWarningText } from "../../../helpers/getBotWarningText";
+import Loading from "../../../components/Loading";
 
 const HomePage: React.FC = () => {
   const dispatch = useDispatch();
@@ -77,8 +78,6 @@ const HomePage: React.FC = () => {
     }
 
     const refreshTime = convertESTtoBRT(games[games.length - 1].matchTime);
-
-    console.log("refreshTime", refreshTime);
 
     function refreshPage() {
       const now = new Date();
@@ -147,10 +146,7 @@ const HomePage: React.FC = () => {
       {/* GAME STATS */}
       {isLoading ? (
         <div className="flex flex-col justify-center items-center">
-          <Text className="text-xl">
-            Nosso sistema está calculando os melhores jogos para suas apostas!
-          </Text>
-          <Text>Aguarde um momento...</Text>
+          <MoonLoader color="#ffbf69" />
         </div>
       ) : (
         <div className="flex flex-col gap-4 max-w-4xl w-full mx-auto py-5 px-3 my-5">
@@ -186,10 +182,12 @@ const HomePage: React.FC = () => {
                     <Text className="text-2xl">
                       {formatMercadoLabel(game.bet)}{" "}
                       {/* {game.odd.toString() !== "-" && (
-                    <span className="text-green-500">{game.odd}</span>
-                  )} */}
+                        <span className="text-green-500">{game.odd}</span>
+                      )} */}
                     </Text>
-                    <Text>{getBotWarningText(game.rate.rateWin)}</Text>
+                    <Text className="text-center">
+                      {getBotWarningText(game.rate.rateWin)}
+                    </Text>
                   </div>
 
                   {/* {game.gale && (
