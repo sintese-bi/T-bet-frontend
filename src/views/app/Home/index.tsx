@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Confetti from "react-confetti";
 import { RingLoader } from "react-spinners";
-import { Table, Text } from "@mantine/core";
+import { Table, Text ,Skeleton } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useDispatch, useSelector } from "react-redux";
 import { DefaultState } from "../../../redux/reducers";
@@ -16,6 +16,7 @@ import { formatGameRateStats, formatMercadoLabel } from "../../../helpers";
 import { separateTeamName } from "../../../helpers/separateTeamName";
 import { getCountryFlag } from "../../../helpers/getCountryFlag";
 
+
 const HomePage: React.FC = () => {
   const dispatch = useDispatch();
   const isUserPlanExpired = useIsPlanExpired();
@@ -23,6 +24,54 @@ const HomePage: React.FC = () => {
     (state: DefaultState) => state.auth
   );
 
+
+  /*Parte do pré-carregamento dos jogos */ 
+  const renderSkeletonCard = () => (
+    <div className="border-2 border-green-500 rounded-lg">
+      <div className="flex flex-wrap lg:justify-between justify-center items-center p-3">
+        <div className="flex flex-col justify-center items-center p-4">
+          <Skeleton height={208} width={208} circle mb="xl" />
+          <Skeleton height={20} width={150} radius="xl" />
+        </div>
+        <div className="flex flex-col items-center">
+          <Skeleton height={20} width={50} radius="xl" />
+          <Skeleton height={20} width={150} mt={6} radius="xl" />
+        </div>
+        <div className="flex flex-col justify-center items-center p-4">
+          <Skeleton height={208} width={208} circle mb="xl" />
+          <Skeleton height={20} width={150} radius="xl" />
+        </div>
+      </div>
+      <div className="flex flex-col gap-2 items-center my-4">
+        <Skeleton height={20} width={100} radius="xl" />
+        <Skeleton height={32} width={200} radius="xl" />
+      </div>
+      <div className="p-4 w-full ">
+        <Table>
+          <Table.Thead>
+            <Table.Tr>
+              <Table.Th><Skeleton height={20} width={100} radius="xl" /></Table.Th>
+              <Table.Th><Skeleton height={20} width={100} radius="xl" /></Table.Th>
+              <Table.Th><Skeleton height={20} width={100} radius="xl" /></Table.Th>
+              <Table.Th><Skeleton height={20} width={100} radius="xl" /></Table.Th>
+            </Table.Tr>
+          </Table.Thead>
+          <Table.Tbody>
+            <Table.Tr>
+              <Table.Td><Skeleton height={20} width={100} radius="xl" /></Table.Td>
+              <Table.Td><Skeleton height={20} width={50} radius="xl" /></Table.Td>
+              <Table.Td><Skeleton height={20} width={50} radius="xl" /></Table.Td>
+              <Table.Td><Skeleton height={20} width={50} radius="xl" /></Table.Td>
+            </Table.Tr>
+          </Table.Tbody>
+        </Table>
+      </div>
+    </div>
+  );
+
+
+
+{/* GAME STATS */}
   const { games, isLoading } = useSelector(
     (state: DefaultState) => state.games
   );
@@ -99,18 +148,19 @@ const HomePage: React.FC = () => {
 
       {/* GAME STATS */}
       {isLoading ? (
-        <div className="flex flex-col justify-center items-center">
-          <Text className="text-xl">
-            Nosso sistema está calculando os melhores jogos para suas apostas!
-          </Text>
-          <Text>Aguarde um momento...</Text>
+        <div className="flex flex-col gap-4 max-w-4xl w-full mx-auto py-5 px-3 my-5">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div key={index} className="border-2 border-green-500 rounded-lg">
+              {renderSkeletonCard()}
+            </div>
+          ))}
         </div>
       ) : (
         <div className="flex flex-col gap-4 max-w-4xl w-full mx-auto py-5 px-3 my-5">
           {games.map((game) => (
-            <div className="border-2 border-green-500 rounded-lg ">
+            <div key={game.game} className="border-2 border-green-500 rounded-lg">
               <div className="flex flex-wrap lg:justify-between justify-center items-center p-3">
-                <div className="flex flex-col justify-center items-center p-4 ">
+                <div className="flex flex-col justify-center items-center p-4">
                   <img
                     src={`https://media.api-sports.io/flags/${getCountryFlag(separateTeamName(game.game))}.svg`}
                     alt={separateTeamName(game.game)}
@@ -135,28 +185,11 @@ const HomePage: React.FC = () => {
               <div className="flex flex-col gap-2 items-center my-4">
                 <Text>Resultado final</Text>
                 <Text className="text-2xl">
-                  {formatMercadoLabel(game.bet)}{" "}
-                  {/* {game.odd.toString() !== "-" && (
-                    <span className="text-green-500">{game.odd}</span>
-                  )} */}
+                  {formatMercadoLabel(game.bet)}
                 </Text>
               </div>
 
-              {/* {game.gale && (
-                <div className="flex flex-col justify-between p-3">
-                  <Text className="text-bold">
-                    Com <span className="text-green-500">3 gales</span>
-                  </Text>
-                  <div className="flex justify-between">
-                    <Text className="p-2 bg-green-500 rounded-lg">
-                      1º gale: 0.5% da banca
-                    </Text>
-                    <Text>2º gale: 1.0% da banca</Text>
-                    <Text>3º gale: 2.0% da banca</Text>
-                  </div>
-                </div>
-              )} */}
-              <div className="p-4 w-full overflow-x-scroll">
+              <div className="p-4 w-full">
                 <Table>
                   <Table.Thead>
                     <Table.Tr>
