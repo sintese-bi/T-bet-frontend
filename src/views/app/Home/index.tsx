@@ -65,7 +65,7 @@ const HomePage: React.FC = () => {
       const BRTDate = new Date(
         now.getFullYear(),
         now.getMonth(),
-        now.getDate() + 1,
+        now.getDate(),
         parseInt(hours, 10),
         parseInt(minutes, 10),
         0
