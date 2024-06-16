@@ -143,6 +143,14 @@ const HomePage: React.FC = () => {
         </Text>
       </section>
 
+      {/* INFORMATION */}
+      <section className="rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-green-400">
+        <Text className="w-full text-center">
+          Tenha gestão de banca. Faça apenas entradas necessárias. Bateu meta?
+          Feche o sistema e comece no próximo dia.
+        </Text>
+      </section>
+
       {/* GAME STATS */}
       {isLoading ? (
         <div className="flex flex-col justify-center items-center">

@@ -12,8 +12,13 @@ const AppLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [isLightTheme, { toggle: toogleLightTheme }] = useDisclosure(false);
-
+  const [isLightTheme, { toggle: toogleLightTheme }] = useDisclosure(
+    localStorage.getItem("theme") === "light"
+  );
+  const handleChangeTheme = () => {
+    localStorage.setItem("theme", isLightTheme ? "dark" : "light");
+    toogleLightTheme();
+  };
   const isHomePage = location.pathname === BROWSER_ROUTE.HOME;
 
   const redirectToWhatsapp = () => {
@@ -37,7 +42,7 @@ const AppLayout = () => {
       </header>
       <div className="self-center">
         <Button
-          onClick={toogleLightTheme}
+          onClick={handleChangeTheme}
           className="bg-green-500 p-2 rounded-md text-white text-center w-full cursor-pointer"
           color="green"
         >
