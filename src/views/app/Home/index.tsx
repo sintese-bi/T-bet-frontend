@@ -20,7 +20,6 @@ import { getBotWarningText } from "../../../helpers/getBotWarningText";
 const HomePage: React.FC = () => {
   const dispatch = useDispatch();
   const isUserPlanExpired = useIsPlanExpired();
-  const [isScreenUpdated, setScreenUpdated] = useState(false);
   const { user, isUserLoading } = useSelector(
     (state: DefaultState) => state.auth
   );
@@ -78,7 +77,7 @@ const HomePage: React.FC = () => {
     }
 
     const refreshTime = convertESTtoBRT(games[games.length - 1].matchTime);
-    refreshTime.setMinutes(refreshTime.getMinutes() + 3);
+    refreshTime.setMinutes(refreshTime.getMinutes() + 4);
 
     function refreshPage() {
       const now = new Date();
