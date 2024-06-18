@@ -140,23 +140,26 @@ function* loginUserCall(action: LoginUserCallProps): Generator {
     });
 
     const {
-      data: { use_id, use_quant, acesso, sub_expired },
+      data: { use_id, use_quant, acesso, sub_expired, expired_free_time },
     } = user as {
       data: {
         use_id: string;
         use_quant: number;
         acesso: string;
         sub_expired: number;
+        expired_free_time: number;
       };
     };
 
     const isExpired = sub_expired === 1;
+    const isFreePlanExpired = expired_free_time === 1;
 
     navigate(BROWSER_ROUTE.HOME);
 
     localStorage.setItem("token@TBet", acesso);
     localStorage.setItem("email@TBet", email);
     localStorage.setItem("expired@TBet", String(isExpired));
+    localStorage.setItem("freePlanValid@TBet", String(isFreePlanExpired));
 
     yield put(
       loginUserSuccess({
@@ -183,6 +186,7 @@ function* loggoutUserCall(action: LoggoutUserCallProps): Generator {
     localStorage.removeItem("token@TBet");
     localStorage.removeItem("email@TBet");
     localStorage.removeItem("expired@TBet");
+    localStorage.removeItem("freePlanValid@TBet");
 
     navigate(BROWSER_ROUTE.LOGIN);
     Notify({ message: "Desconectado com sucesso!", type: "success" });

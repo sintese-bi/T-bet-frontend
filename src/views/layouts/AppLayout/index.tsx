@@ -16,7 +16,7 @@ const AppLayout = () => {
     localStorage.getItem("theme") === "light"
   );
   const handleChangeTheme = () => {
-    localStorage.setItem("theme", isLightTheme ? "dark" : "light");
+    localStorage.setItem("theme", isLightTheme ? "light" : "dark");
     toogleLightTheme();
   };
   const isHomePage = location.pathname === BROWSER_ROUTE.HOME;

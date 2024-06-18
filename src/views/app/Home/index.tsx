@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Confetti from "react-confetti";
 import { MoonLoader, RingLoader } from "react-spinners";
 import { Table, Text } from "@mantine/core";
@@ -16,10 +16,13 @@ import { formatGameRateStats, formatMercadoLabel } from "../../../helpers";
 import { separateTeamName } from "../../../helpers/separateTeamName";
 import { getCountryFlag } from "../../../helpers/getCountryFlag";
 import { getBotWarningText } from "../../../helpers/getBotWarningText";
+import { Button } from "../../../components";
+import { useIsFreePlanExpired } from "../../../hooks/useIsFreePlanExpired";
 
 const HomePage: React.FC = () => {
   const dispatch = useDispatch();
   const isUserPlanExpired = useIsPlanExpired();
+  const isFreePlanExpired = useIsFreePlanExpired();
   const { user, isUserLoading } = useSelector(
     (state: DefaultState) => state.auth
   );
@@ -29,6 +32,7 @@ const HomePage: React.FC = () => {
   );
 
   const customWindow = useGetWindow();
+  const handleGetNextGames = () => dispatch(getNextGames());
 
   const [isBuyModalOpen, { close: closeBuyModal, open: openBuyModal }] =
     useDisclosure(false);
@@ -52,44 +56,16 @@ const HomePage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    dispatch(getNextGames());
-  }, []);
-
-  useEffect(() => {
-    if (!games.length) return;
-
-    function convertESTtoBRT(ESTTime: string) {
-      const [hours, minutes] = ESTTime.split(":");
-      const now = new Date();
-      const BRTDate = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-        parseInt(hours, 10),
-        parseInt(minutes, 10),
-        0
-      );
-
-      // Adjust for BRT timezone (UTC-3)
-      BRTDate.setHours(BRTDate.getHours() - 4);
-
-      return BRTDate;
+    if (isFreePlanExpired) {
+      Notify({
+        message: "Seu plano gratuito expirou.",
+        type: "warn",
+      });
+      handleOpenBuyModal();
+      return;
     }
-
-    const refreshTime = convertESTtoBRT(games[games.length - 1].matchTime);
-    refreshTime.setMinutes(refreshTime.getMinutes() + 4);
-
-    function refreshPage() {
-      const now = new Date();
-      if (now.getTime() >= refreshTime.getTime()) {
-        window.location.reload();
-      } else {
-        setTimeout(refreshPage, 1000); // Check every second
-      }
-    }
-
-    refreshPage();
-  }, [games]);
+    handleGetNextGames();
+  }, [isFreePlanExpired]);
 
   return isUserLoading ? (
     <section className="flex justify-center items-center h-full">
@@ -104,7 +80,6 @@ const HomePage: React.FC = () => {
           height={customWindow.height}
         />
       )}
-
       {/* CREDIT */}
       <section className="rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-green-400">
         <div className="w-full text-center">
@@ -132,7 +107,6 @@ const HomePage: React.FC = () => {
           </a>
         </div>
       </section>
-
       {/* INFORMATION */}
       <section className="rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-green-400">
         <Text className="w-full text-center">
@@ -141,7 +115,6 @@ const HomePage: React.FC = () => {
           fazer as entradas.
         </Text>
       </section>
-
       {/* INFORMATION */}
       <section className="rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-green-400">
         <Text className="w-full text-center">
@@ -149,7 +122,13 @@ const HomePage: React.FC = () => {
           Feche o sistema e comece no próximo dia.
         </Text>
       </section>
-
+      <Button
+        className="bg-green-500 p-2 rounded-md text-white text-center w-full
+      cursor-pointer"
+        onClick={handleGetNextGames}
+      >
+        Atualizar jogos
+      </Button>
       {/* GAME STATS */}
       {isLoading ? (
         <div className="flex flex-col justify-center items-center">
@@ -253,7 +232,6 @@ const HomePage: React.FC = () => {
           ))}
         </div>
       )}
-
       <BuyPlanModal isOpen={isBuyModalOpen} onClose={handleCloseBuyModal} />
     </form>
   );
