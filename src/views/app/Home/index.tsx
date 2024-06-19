@@ -110,16 +110,16 @@ const HomePage: React.FC = () => {
       {/* INFORMATION */}
       <section className="rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-green-400">
         <Text className="w-full text-center">
-          O sistema mostra 3 jogos por vez. A atualização dos próximos 3 jogos é
-          automática. Os jogos sempre são atualizados em tempo suficiente para
-          fazer as entradas.
+          O sistema mostra 3 jogos por vez. Clique no botão atualizar jogos para
+          mostrar novos jogos. No plano free você tem 2 horas para testar o
+          sistema.
         </Text>
       </section>
       {/* INFORMATION */}
       <section className="rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-green-400">
         <Text className="w-full text-center">
-          Tenha gestão de banca. Faça apenas entradas necessárias. Bateu meta?
-          Feche o sistema e comece no próximo dia.
+          Tenha gestão de banca. Faça apenas entradas necessárias para bater
+          meta.
         </Text>
       </section>
       <Button
