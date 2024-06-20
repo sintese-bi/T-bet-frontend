@@ -118,6 +118,13 @@ const HomePage: React.FC = () => {
       {/* INFORMATION */}
       <section className="rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-green-400">
         <Text className="w-full text-center">
+          Caso as partidas não atualizem mesmo após clicar no botão atualizar,
+          gentileza aguardar alguns minutos até o jogo ser localizado na base!
+        </Text>
+      </section>
+      {/* INFORMATION */}
+      <section className="rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-green-400">
+        <Text className="w-full text-center">
           Tenha gestão de banca. Faça apenas entradas necessárias para bater
           meta.
         </Text>
