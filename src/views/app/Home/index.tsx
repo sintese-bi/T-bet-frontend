@@ -83,19 +83,7 @@ const HomePage: React.FC = () => {
       {/* CREDIT */}
       <section className="rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-green-400">
         <div className="w-full text-center">
-          {user.credits > 3 || user.credits === 0 ? (
-            <>
-              <Text>
-                Por apenas R$ 9,90 você tem acesso ilimitado a plataforma por 30
-                dias, boas apostas!
-              </Text>
-            </>
-          ) : (
-            <Text>
-              Você possui 3 consultas gratuitas, pesquise o jogo de interesse e
-              aproveite!
-            </Text>
-          )}
+          <Text>Você possui 2 horas para usar o sistema gratuitamente</Text>
         </div>
         <div className="flex justify-between items-center w-full gap-4">
           <a
@@ -111,8 +99,7 @@ const HomePage: React.FC = () => {
       <section className="rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-green-400">
         <Text className="w-full text-center">
           O sistema mostra 3 jogos por vez. Clique no botão atualizar jogos para
-          mostrar novos jogos. No plano free você tem 2 horas para testar o
-          sistema.
+          mostrar novos jogos.
         </Text>
       </section>
       {/* INFORMATION */}
