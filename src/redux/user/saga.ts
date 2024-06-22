@@ -51,12 +51,45 @@ function* getUserCall(): Generator {
     );
     const {
       data: {
-        message: { use_email, use_quant },
+        message: { use_email, use_quant, use_date_expire },
+        expired_free_time = 0,
+        time_left = "1:20",
       },
-    } = user as { data: { message: { use_email: string; use_quant: number } } };
+    } = user as {
+      data: {
+        message: {
+          use_email: string;
+          use_quant: number;
+          use_date_expire: "FREE" | null;
+        };
+        expired_free_time: number;
+        time_left: string;
+      };
+    };
+
+    const isFreePlanExpired = expired_free_time === 1;
+    const isPayedPlanValid = use_date_expire === null;
+
+    localStorage.setItem("freePlanValid@TBet", String(isFreePlanExpired));
+    localStorage.setItem("payedPlanValid@TBet", String(isPayedPlanValid));
+
+    const formatedTime = () => {
+      const [hours = 0, minutes = 0] = time_left.split(":").map(Number);
+
+      const endTime = new Date();
+      endTime.setHours(endTime.getHours() + hours);
+      endTime.setMinutes(endTime.getMinutes() + minutes);
+
+      return endTime;
+    };
+
+    const timeLeft = isFreePlanExpired ? new Date() : formatedTime();
 
     yield put(
-      getUserSuccess({ user: { email: use_email, credits: use_quant } })
+      getUserSuccess({
+        user: { email: use_email, credits: use_quant },
+        timeLeft,
+      })
     );
   } catch (e) {
     const error = e as Error;
@@ -140,7 +173,14 @@ function* loginUserCall(action: LoginUserCallProps): Generator {
     });
 
     const {
-      data: { use_id, use_quant, acesso, sub_expired, expired_free_time },
+      data: {
+        use_id,
+        use_quant,
+        acesso,
+        sub_expired,
+        expired_free_time,
+        time_left,
+      },
     } = user as {
       data: {
         use_id: string;
@@ -148,22 +188,38 @@ function* loginUserCall(action: LoginUserCallProps): Generator {
         acesso: string;
         sub_expired: number;
         expired_free_time: number;
+        time_left: string;
       };
     };
 
     const isExpired = sub_expired === 1;
     const isFreePlanExpired = expired_free_time === 1;
 
-    navigate(BROWSER_ROUTE.HOME);
+    navigate(
+      isFreePlanExpired ? BROWSER_ROUTE.EXPIRED_PLAN : BROWSER_ROUTE.HOME
+    );
 
     localStorage.setItem("token@TBet", acesso);
     localStorage.setItem("email@TBet", email);
     localStorage.setItem("expired@TBet", String(isExpired));
     localStorage.setItem("freePlanValid@TBet", String(isFreePlanExpired));
 
+    const formatedTime = () => {
+      const [hours = 0, minutes = 0] = time_left.split(":").map(Number);
+
+      const endTime = new Date();
+      endTime.setHours(endTime.getHours() + hours);
+      endTime.setMinutes(endTime.getMinutes() + minutes);
+
+      return endTime;
+    };
+
+    const timeLeft = isFreePlanExpired ? new Date() : formatedTime();
+
     yield put(
       loginUserSuccess({
         user: { id: use_id, credits: use_quant, token: acesso, email },
+        timeLeft,
       })
     );
   } catch (e) {
@@ -187,6 +243,7 @@ function* loggoutUserCall(action: LoggoutUserCallProps): Generator {
     localStorage.removeItem("email@TBet");
     localStorage.removeItem("expired@TBet");
     localStorage.removeItem("freePlanValid@TBet");
+    localStorage.removeItem("payedPlanValid@TBet");
 
     navigate(BROWSER_ROUTE.LOGIN);
     Notify({ message: "Desconectado com sucesso!", type: "success" });

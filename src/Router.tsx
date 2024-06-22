@@ -19,6 +19,7 @@ const ForgotPasswordPage = lazy(
 
 //? APP
 const HomePage = lazy(() => import("./views/app/Home"));
+const ExpiredPlan = lazy(() => import("./views/app/PlanExpired/PlanExpired"));
 
 const Loading = () => (
   <div className="flex h-full justify-center items-center bg-black text-white">
@@ -34,6 +35,10 @@ function Router() {
           <Route path="/app" element={<AppLayout />}>
             <Route path="" element={<Navigate to={BROWSER_ROUTE.HOME} />} />
             <Route path={BROWSER_ROUTE.HOME} element={<HomePage />} />
+            <Route
+              path={BROWSER_ROUTE.EXPIRED_PLAN}
+              element={<ExpiredPlan />}
+            />
           </Route>
 
           <Route path="/auth" element={<AuthLayout />}>

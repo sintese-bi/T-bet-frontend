@@ -53,15 +53,13 @@ const AppLayout = () => {
         <Outlet />
       </section>
       <footer className="flex flex-col items-center gap-5 justify-center py-7">
-        {isHomePage && (
-          <Button
-            onClick={handleLoggout}
-            bg={"red"}
-            className="bg-red-500 w-full rounded-md p-3 max-w-lg"
-          >
-            Sair
-          </Button>
-        )}
+        <Button
+          onClick={handleLoggout}
+          bg={"red"}
+          className="bg-red-500 w-full rounded-md p-3 max-w-lg"
+        >
+          Sair
+        </Button>
         <Button
           bg={"green"}
           onClick={redirectToWhatsapp}

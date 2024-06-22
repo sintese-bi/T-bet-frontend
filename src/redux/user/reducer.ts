@@ -35,6 +35,7 @@ import {
   UPDATE_USER_ERROR,
   UPDATE_USER_SUCCESS,
 } from "../actions";
+import { timeLog } from "console";
 
 type UserAction = {
   type: string;
@@ -53,6 +54,7 @@ type UserAction = {
 type UserState = {
   user: User;
   isUserLoading: boolean;
+  timeLeft: Date;
   error: any;
 };
 
@@ -63,6 +65,7 @@ const initialState = {
     token: "",
     email: "",
   },
+  timeLeft: new Date(),
   isUserLoading: false,
   error: null,
 };
@@ -81,10 +84,11 @@ const UserReducer: Reducer<UserState, UserAction> = (
     }
 
     case GET_USER_SUCCESS: {
-      const { user } = action.payload as GetUserSuccess;
+      const { user, timeLeft } = action.payload as GetUserSuccess;
       return {
         ...state,
         user: { ...state.user, ...user },
+        timeLeft,
         isUserLoading: false,
       };
     }
@@ -97,28 +101,17 @@ const UserReducer: Reducer<UserState, UserAction> = (
     }
 
     case LOGIN_USER_SUCCESS: {
-      const { user } = action.payload as LoginUserSuccess;
+      const { user, timeLeft } = action.payload as LoginUserSuccess;
       return {
         ...state,
         user: user,
+        timeLeft,
         isUserLoading: false,
       };
     }
 
-    case REGISTER_USER_SUCCESS: {
-      return {
-        ...state,
-        isUserLoading: false,
-      };
-    }
-
-    case RESET_PASSWORD_LINK_SUCCESS: {
-      return {
-        ...state,
-        isUserLoading: false,
-      };
-    }
-
+    case REGISTER_USER_SUCCESS:
+    case RESET_PASSWORD_LINK_SUCCESS:
     case RESET_PASSWORD_SUCCESS: {
       return {
         ...state,
@@ -126,59 +119,19 @@ const UserReducer: Reducer<UserState, UserAction> = (
       };
     }
 
-    case BUY_CREDITS_SUCCESS: {
-      return {
-        ...state,
-      };
-    }
-
-    case BUY_CREDITS: {
-      return {
-        ...state,
-      };
-    }
-
+    case BUY_CREDITS_SUCCESS:
+    case BUY_CREDITS:
     case UPDATE_USER: {
       return {
         ...state,
       };
     }
 
-    case LOGIN_USER: {
-      return {
-        ...state,
-        isUserLoading: true,
-      };
-    }
-
-    case REGISTER_USER: {
-      return {
-        ...state,
-        isUserLoading: true,
-      };
-    }
-
-    case GET_USER: {
-      return {
-        ...state,
-        isUserLoading: true,
-      };
-    }
-
-    case LOGGOUT_USER: {
-      return {
-        ...state,
-        isUserLoading: true,
-      };
-    }
-
-    case RESET_PASSWORD: {
-      return {
-        ...state,
-        isUserLoading: true,
-      };
-    }
-
+    case LOGIN_USER:
+    case REGISTER_USER:
+    case GET_USER:
+    case LOGGOUT_USER:
+    case RESET_PASSWORD:
     case RESET_PASSWORD_LINK: {
       return {
         ...state,

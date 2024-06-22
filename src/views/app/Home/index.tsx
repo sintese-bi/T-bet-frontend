@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Confetti from "react-confetti";
 import { MoonLoader, RingLoader } from "react-spinners";
 import { Table, Text } from "@mantine/core";
@@ -18,12 +18,19 @@ import { getCountryFlag } from "../../../helpers/getCountryFlag";
 import { getBotWarningText } from "../../../helpers/getBotWarningText";
 import { Button } from "../../../components";
 import { useIsFreePlanExpired } from "../../../hooks/useIsFreePlanExpired";
+import { useNavigate } from "react-router-dom";
+import { BROWSER_ROUTE } from "../../../constants";
+import { useIsPayedPlanValid } from "../../../hooks/useIsPayedPlanValid";
 
 const HomePage: React.FC = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const isUserPlanExpired = useIsPlanExpired();
   const isFreePlanExpired = useIsFreePlanExpired();
-  const { user, isUserLoading } = useSelector(
+  const isPayedPlanValid = useIsPayedPlanValid();
+  const [hoursLeft, setHoursLeft] = useState("");
+
+  const { user, isUserLoading, timeLeft } = useSelector(
     (state: DefaultState) => state.auth
   );
 
@@ -32,7 +39,10 @@ const HomePage: React.FC = () => {
   );
 
   const customWindow = useGetWindow();
-  const handleGetNextGames = () => dispatch(getNextGames());
+  const handleGetNextGames = () => {
+    dispatch(getUser({ email: user.email }));
+    dispatch(getNextGames());
+  };
 
   const [isBuyModalOpen, { close: closeBuyModal, open: openBuyModal }] =
     useDisclosure(false);
@@ -45,28 +55,53 @@ const HomePage: React.FC = () => {
     dispatch(getUser({ email: user.email }));
   }, [dispatch]);
 
+  // VERIFY USER PLANS
   useEffect(() => {
     if (isUserPlanExpired) {
-      Notify({
-        message:
-          "Seu plano expirou, por favor, compre para ter mais 30 dias de acesso.",
-        type: "error",
-      });
+      navigate(BROWSER_ROUTE.EXPIRED_PLAN);
     }
-  }, []);
 
-  useEffect(() => {
     if (isFreePlanExpired) {
-      Notify({
-        message: "Seu plano gratuito expirou.",
-        type: "warn",
-      });
-      handleOpenBuyModal();
+      navigate(BROWSER_ROUTE.EXPIRED_PLAN);
       return;
     }
-    handleGetNextGames();
-  }, [isFreePlanExpired]);
 
+    dispatch(getNextGames());
+  }, [navigate, isUserPlanExpired, isFreePlanExpired]);
+
+  // COUNT TIME LEFT
+  useEffect(() => {
+    if (isPayedPlanValid && isUserLoading) return;
+
+    function updateTimeLeft() {
+      const now = new Date();
+      const endTime = new Date(timeLeft);
+
+      const timeDifference = endTime.getTime() - now.getTime();
+
+      if (timeDifference <= 0) {
+        clearInterval(intervalId);
+        navigate(BROWSER_ROUTE.EXPIRED_PLAN);
+        return;
+      }
+
+      const minutesLeft = Math.floor(
+        (timeDifference % (1000 * 60 * 60)) / (1000 * 60)
+      );
+      const hoursLeft = Math.floor(timeDifference / (1000 * 60 * 60));
+
+      setHoursLeft(
+        `${hoursLeft}:${minutesLeft < 10 ? "0" : ""}${minutesLeft}h`
+      );
+    }
+
+    const intervalId = setInterval(updateTimeLeft, 60000);
+    updateTimeLeft();
+
+    return () => clearInterval(intervalId);
+  }, [timeLeft, navigate, isPayedPlanValid, isUserLoading]);
+
+  const isLoadingGames = isUserLoading || isLoading;
   return isUserLoading ? (
     <section className="flex justify-center items-center h-full">
       <RingLoader color="#ffbf69" />
@@ -80,10 +115,19 @@ const HomePage: React.FC = () => {
           height={customWindow.height}
         />
       )}
+
+      {!isPayedPlanValid && (
+        <div className="z-50 fixed right-5 top-10 p-3 bg-green-500 rounded-full">
+          <Text className="text-center">
+            Tempo restante: <span className="font-bold">{hoursLeft}</span>
+          </Text>
+        </div>
+      )}
+
       {/* CREDIT */}
       <section className="rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-green-400">
         <div className="w-full text-center">
-          <Text>Você possui 2 horas para usar o sistema gratuitamente</Text>
+          <Text>Você possui 2 horas para usar o sistema gratuitamente.</Text>
         </div>
         <div className="flex justify-between items-center w-full gap-4">
           <a
@@ -95,6 +139,7 @@ const HomePage: React.FC = () => {
           </a>
         </div>
       </section>
+
       {/* INFORMATION */}
       <section className="rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-green-400">
         <Text className="w-full text-center">
@@ -116,6 +161,7 @@ const HomePage: React.FC = () => {
           meta.
         </Text>
       </section>
+
       <Button
         className="bg-green-500 p-2 rounded-md text-white text-center w-full
       cursor-pointer"
@@ -124,7 +170,7 @@ const HomePage: React.FC = () => {
         Atualizar jogos
       </Button>
       {/* GAME STATS */}
-      {isLoading ? (
+      {isLoadingGames ? (
         <div className="flex flex-col justify-center items-center">
           <MoonLoader color="#ffbf69" />
         </div>

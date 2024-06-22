@@ -15,6 +15,7 @@ export type GetUserRequest = {
 
 export type GetUserSuccess = {
   user: Omit<User, "id" | "token">;
+  timeLeft: Date;
 };
 
 export type RegisterUserRequest = RedirectProps & {
@@ -28,6 +29,7 @@ export type LoginUserRequest = RedirectProps & {
 
 export type LoginUserSuccess = {
   user: User;
+  timeLeft: Date;
 };
 
 export type UpdateUserRequest = Omit<User, "id" | "token">;
