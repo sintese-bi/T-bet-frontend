@@ -58,14 +58,12 @@ const HomePage: React.FC = () => {
   // VERIFY USER PLANS
   useEffect(() => {
     if (isPremiunPlanExpired) {
-      console.log("PREMIUM PLAN EXPIRED");
-      // navigate(BROWSER_ROUTE.EXPIRED_PLAN);
+      navigate(BROWSER_ROUTE.EXPIRED_PLAN);
       return;
     }
 
     if (isFreePlanExpired) {
-      console.log("FREE PLAN EXPIRED");
-      // navigate(BROWSER_ROUTE.EXPIRED_PLAN);
+      navigate(BROWSER_ROUTE.EXPIRED_PLAN);
       return;
     }
 
