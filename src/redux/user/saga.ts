@@ -192,16 +192,15 @@ function* loginUserCall(action: LoginUserCallProps): Generator {
       };
     };
 
-    const isExpired = sub_expired === 1;
+    const isPremiunExpired = sub_expired === 1;
     const isFreePlanExpired = expired_free_time === 1;
+    const invalidLogin = isPremiunExpired || isFreePlanExpired;
 
-    navigate(
-      isFreePlanExpired ? BROWSER_ROUTE.EXPIRED_PLAN : BROWSER_ROUTE.HOME
-    );
+    navigate(invalidLogin ? BROWSER_ROUTE.EXPIRED_PLAN : BROWSER_ROUTE.HOME);
 
     localStorage.setItem("token@TBet", acesso);
     localStorage.setItem("email@TBet", email);
-    localStorage.setItem("expired@TBet", String(isExpired));
+    localStorage.setItem("expired@TBet", String(isPremiunExpired));
     localStorage.setItem("freePlanValid@TBet", String(isFreePlanExpired));
 
     const formatedTime = () => {

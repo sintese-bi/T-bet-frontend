@@ -25,7 +25,7 @@ import { useIsPayedPlanValid } from "../../../hooks/useIsPayedPlanValid";
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const isUserPlanExpired = useIsPlanExpired();
+  const isPremiunPlanExpired = useIsPlanExpired();
   const isFreePlanExpired = useIsFreePlanExpired();
   const isPayedPlanValid = useIsPayedPlanValid();
   const [hoursLeft, setHoursLeft] = useState("");
@@ -57,21 +57,25 @@ const HomePage: React.FC = () => {
 
   // VERIFY USER PLANS
   useEffect(() => {
-    if (isUserPlanExpired) {
-      navigate(BROWSER_ROUTE.EXPIRED_PLAN);
+    if (isPremiunPlanExpired) {
+      console.log("PREMIUM PLAN EXPIRED");
+      // navigate(BROWSER_ROUTE.EXPIRED_PLAN);
+      return;
     }
 
     if (isFreePlanExpired) {
-      navigate(BROWSER_ROUTE.EXPIRED_PLAN);
+      console.log("FREE PLAN EXPIRED");
+      // navigate(BROWSER_ROUTE.EXPIRED_PLAN);
       return;
     }
 
     dispatch(getNextGames());
-  }, [navigate, isUserPlanExpired, isFreePlanExpired]);
+  }, [navigate, isPremiunPlanExpired, isFreePlanExpired]);
 
   // COUNT TIME LEFT
   useEffect(() => {
-    if (isPayedPlanValid && isUserLoading) return;
+    if (isPayedPlanValid) return;
+    if (user.email === "") return;
 
     function updateTimeLeft() {
       const now = new Date();
@@ -99,7 +103,7 @@ const HomePage: React.FC = () => {
     updateTimeLeft();
 
     return () => clearInterval(intervalId);
-  }, [timeLeft, navigate, isPayedPlanValid, isUserLoading]);
+  }, [timeLeft, navigate, isPayedPlanValid]);
 
   const isLoadingGames = isUserLoading || isLoading;
   return isUserLoading ? (
@@ -116,7 +120,7 @@ const HomePage: React.FC = () => {
         />
       )}
 
-      {!isPayedPlanValid && (
+      {!isPayedPlanValid && !isPremiunPlanExpired && (
         <div className="z-50 fixed right-5 top-10 p-3 bg-green-500 rounded-full">
           <Text className="text-center">
             Tempo restante: <span className="font-bold">{hoursLeft}</span>
