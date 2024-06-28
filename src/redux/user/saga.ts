@@ -125,6 +125,7 @@ function* registerUserCall(action: RegisterUserCallProps): Generator {
       },
     } = e as { response: { data: { message: string } } };
     console.error(e);
+    Notify({ message: "Este email ja esta cadastrado.", type: "error" });
     yield put(registerUserError(message));
   }
 }
@@ -280,6 +281,11 @@ function* resetPasswordLinkCall(action: ResetPasswordLinkCallProps): Generator {
   } catch (e) {
     const error = e as Error;
     console.error(error);
+    Notify({
+      message:
+        "Ocorreu um erro ao enviar o link de recuperação de senha, tente novamente.",
+      type: "error",
+    });
     yield put(resetPasswordLinkError());
   }
 }
@@ -314,6 +320,10 @@ function* resetPasswordCall(action: ResetPasswordCallProps): Generator {
   } catch (e) {
     const error = e as Error;
     console.error(error);
+    Notify({
+      message: "Ocorreu um erro ao alterar a sua senha, tente novamente.",
+      type: "error",
+    });
     yield put(resetPasswordError());
   }
 }
