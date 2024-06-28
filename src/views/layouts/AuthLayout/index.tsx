@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { Button } from "../../../components";
+import { Text } from "@mantine/core";
 
 const AuthLayout = () => {
   const redirectToWhatsapp = () => {
@@ -15,12 +16,16 @@ const AuthLayout = () => {
         <Outlet />
       </section>
       <footer className="flex flex-col items-center gap-5 justify-center py-7">
+        <Text>
+          Quer fazer parte do grupo de sucesso que usa a TBET para mandar
+          sinais? Junte-se agora
+        </Text>
         <Button
-          bg={"green"}
+          bg={"cyan"}
           onClick={redirectToWhatsapp}
-          className="bg-green-400 w-full rounded-md p-3 max-w-lg text-white"
+          className="w-full h-full rounded-md p-3 max-w-lg text-white"
         >
-          Whatsaap
+          Telegram
         </Button>
         Copyright © 2024 T-bet
       </footer>

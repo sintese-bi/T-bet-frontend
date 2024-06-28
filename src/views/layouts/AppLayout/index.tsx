@@ -1,6 +1,6 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { BROWSER_ROUTE } from "../../../constants";
-import { Button } from "@mantine/core";
+import { Button, Text } from "@mantine/core";
 import { useDispatch } from "react-redux";
 import { loggoutUser } from "../../../redux/user/actions";
 import { useEffect } from "react";
@@ -60,12 +60,16 @@ const AppLayout = () => {
         >
           Sair
         </Button>
+        <Text>
+          Quer fazer parte do grupo de sucesso que usa a TBET para mandar
+          sinais? Junte-se agora
+        </Text>
         <Button
-          bg={"green"}
+          bg={"cyan"}
           onClick={redirectToWhatsapp}
-          className="bg-green-400 w-full rounded-md p-3 max-w-lg"
+          className="w-full h-full rounded-md p-3 max-w-lg text-white"
         >
-          Whatsaap
+          Telegram
         </Button>
         Copyright © 2024 T-bet
       </footer>
