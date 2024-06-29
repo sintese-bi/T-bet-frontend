@@ -21,9 +21,10 @@ const AppLayout = () => {
   };
   const isHomePage = location.pathname === BROWSER_ROUTE.HOME;
 
-  const redirectToWhatsapp = () => {
-    window.open("https://api.whatsapp.com/send?phone=553192932316");
+  const redirectToTelegram = () => {
+    window.open("https://t.me/conquistador_br");
   };
+
   const handleLoggout = () => dispatch(loggoutUser({ navigate }));
 
   const isTokenValid = useSessionCheck();
@@ -66,7 +67,7 @@ const AppLayout = () => {
         </Text>
         <Button
           bg={"cyan"}
-          onClick={redirectToWhatsapp}
+          onClick={redirectToTelegram}
           className="w-full h-full rounded-md p-3 max-w-lg text-white"
         >
           Telegram
