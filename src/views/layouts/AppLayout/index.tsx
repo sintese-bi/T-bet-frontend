@@ -1,11 +1,11 @@
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { BROWSER_ROUTE } from "../../../constants";
-import { Button, Text } from "@mantine/core";
-import { useDispatch } from "react-redux";
-import { loggoutUser } from "../../../redux/user/actions";
-import { useEffect } from "react";
-import { useSessionCheck } from "../../../hooks";
-import { useDisclosure } from "@mantine/hooks";
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { BROWSER_ROUTE } from '../../../constants';
+import { Button, Text } from '@mantine/core';
+import { useDispatch } from 'react-redux';
+import { loggoutUser } from '../../../redux/user/actions';
+import { useEffect } from 'react';
+import { useSessionCheck } from '../../../hooks';
+import { useDisclosure } from '@mantine/hooks';
 
 const AppLayout = () => {
   const dispatch = useDispatch();
@@ -13,16 +13,16 @@ const AppLayout = () => {
   const location = useLocation();
 
   const [isLightTheme, { toggle: toogleLightTheme }] = useDisclosure(
-    localStorage.getItem("theme") === "light"
+    localStorage.getItem('theme') === 'light',
   );
   const handleChangeTheme = () => {
-    localStorage.setItem("theme", isLightTheme ? "light" : "dark");
+    localStorage.setItem('theme', isLightTheme ? 'light' : 'dark');
     toogleLightTheme();
   };
   const isHomePage = location.pathname === BROWSER_ROUTE.HOME;
 
   const redirectToTelegram = () => {
-    window.open("https://t.me/conquistador_br");
+    window.open('https://t.me/conquistadorfree');
   };
 
   const handleLoggout = () => dispatch(loggoutUser({ navigate }));
@@ -36,10 +36,10 @@ const AppLayout = () => {
 
   return (
     <main
-      className={`flex flex-col px-4 lg:px-12 ${isLightTheme ? "bg-white text-black" : "bg-black text-white"}`}
+      className={`flex flex-col px-4 lg:px-12 ${isLightTheme ? 'bg-white text-black' : 'bg-black text-white'}`}
     >
       <header className="flex justify-center py-4">
-        <img className="w-24" src={"/logo-bet.png"} alt="Tbet logo" />
+        <img className="w-24" src={'/logo-bet.png'} alt="Tbet logo" />
       </header>
       <div className="self-center">
         <Button
@@ -56,7 +56,7 @@ const AppLayout = () => {
       <footer className="flex flex-col items-center gap-5 justify-center py-7">
         <Button
           onClick={handleLoggout}
-          bg={"red"}
+          bg={'red'}
           className="bg-red-500 w-full rounded-md p-3 max-w-lg"
         >
           Sair
@@ -66,7 +66,7 @@ const AppLayout = () => {
           sinais? Junte-se agora
         </Text>
         <Button
-          bg={"cyan"}
+          bg={'cyan'}
           onClick={redirectToTelegram}
           className="w-full h-full rounded-md p-3 max-w-lg text-white"
         >
