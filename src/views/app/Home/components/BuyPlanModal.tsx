@@ -11,7 +11,7 @@ export const BuyPlanModal: React.FC<Props> = ({ isOpen, onClose }) => {
   const { email } = useSelector((state: DefaultState) => state.auth.user);
 
   const handleGoToStripe = () => {
-    window.open("https://buy.stripe.com/aEUg2B0l9d9iffObJp");
+    window.open("https://buy.stripe.com/fZe6s11pdb1a4Ba5lb");
   };
 
   return (
