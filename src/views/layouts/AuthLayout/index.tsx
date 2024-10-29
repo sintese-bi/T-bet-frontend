@@ -4,7 +4,7 @@ import { Text } from "@mantine/core";
 
 const AuthLayout = () => {
   const redirectToTelegram = () => {
-    window.open('https://t.me/conquistadorfree');
+    window.open('https://t.me/conquistadorbet');
   };
 
   return (
