@@ -22,7 +22,7 @@ const AppLayout = () => {
   const isHomePage = location.pathname === BROWSER_ROUTE.HOME;
 
   const redirectToTelegram = () => {
-    window.open('https://t.me/conquistadorfree');
+    window.open('https://t.me/conquistadorbet');
   };
 
   const handleLoggout = () => dispatch(loggoutUser({ navigate }));
