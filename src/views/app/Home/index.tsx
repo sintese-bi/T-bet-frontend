@@ -145,7 +145,7 @@ const HomePage: React.FC = () => {
       {/* INFORMATION */}
       <section className="rounded-2xl flex flex-wrap justify-center items-center p-4 gap-5 lg:justify-between border-2 border-green-400">
         <Text className="w-full text-center">
-          O sistema mostra 3 jogos por vez. Clique no botão atualizar jogos para
+          O sistema mostra 6 jogos por vez. Clique no botão atualizar jogos para
           mostrar novos jogos.
         </Text>
       </section>
